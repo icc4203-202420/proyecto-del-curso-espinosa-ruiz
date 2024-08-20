@@ -149,7 +149,7 @@ Luego, se necesita crear una clave para que devise-jwt y Warden generen tokens J
 ```sh
 $ rails runner "require 'securerandom'; puts SecureRandom.hex(64)"
 ```
-
+498401590cb936b7bf43d76730ff5b6fcbdd928080ddd04cc13e67b8179cdfcc873ce51a446fd4fcc1f74e4d95cbc9c1030847bafa97efa61fa071043f1ba35b
 Copiar la clave generada en la consola.
 
 ```sh

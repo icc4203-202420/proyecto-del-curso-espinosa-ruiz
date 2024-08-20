@@ -1,13 +1,29 @@
 class API::V1::UsersController < ApplicationController
   respond_to :json
-  before_action :set_user, only: [:show, :update]  
+  before_action :set_user, only: [:show, :update, :friendships, :create_friendship]
+  before_action :authenticate_user!, only: [:friendships, :create_friendship, :update]  
   
   def index
     @users = User.includes(:reviews, :address).all   
   end
 
-  def show
-  
+
+  # GET /api/v1/users/:id/friendships
+  def friendships
+    @friends = @user.friends
+    render json: @friends, status: :ok
+  end
+
+  # POST /api/v1/users/:id/friendships
+  def create_friendship
+    friend = User.find_by(id: params[:friend_id])
+    if friend.nil?
+      render json: { error: 'Friend not found' }, status: :not_found
+    elsif @user.friends << friend
+      render json: { message: 'Friendship created successfully' }, status: :created
+    else
+      render json: { error: 'Unable to create friendship' }, status: :unprocessable_entity
+    end
   end
 
   def create
@@ -20,7 +36,6 @@ class API::V1::UsersController < ApplicationController
   end
 
   def update
-    #byebug
     if @user.update(user_params)
       render :show, status: :ok, location: api_v1_users_path(@user)
     else
@@ -43,3 +58,5 @@ class API::V1::UsersController < ApplicationController
             })
   end
 end
+
+
