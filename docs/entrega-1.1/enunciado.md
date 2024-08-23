@@ -14,7 +14,7 @@ En el futuro cercano (último trimestre de 2024), se lanzará MUI 7 que estará 
 
 Para el diseño de la interfaz, estará permitido usar Axure RP o Figma. En el caso de Axure, recomendamos la siguiente biblioteca de componentes de Material UI versión 2: [https://github.com/duzyn/material-axure-library](https://github.com/duzyn/material-axure-library).
 
-Para Figma, se puede buscar el [ ](https://www.figma.com/community/file/778763161265841481).
+Para Figma, se puede buscar el [Material 2 Design Kit](https://www.figma.com/community/file/778763161265841481).
 
 Tanto para Axure como Figma, se puede obtener una licencia educacional que permite utilizar toda la funcionalidad relevante del software.
 
@@ -44,7 +44,7 @@ Cada requisito será evaluado en escala 1-5. Estos puntos se traducen a ponderad
 * 2 -> 0.25: Esbozo de solucion
 * 3 -> 0.5: Logro intermedio
 * 4 -> 0.75: Alto logro con deficiencias o errores menores
-* 5 -> 0.75: Implementación completa y correcta
+* 5 -> 1.00: Implementación completa y correcta
 
 Los ponderadores aplican al puntaje máximo del ítem. La nota en escala 1-7 se calcula como la suma de puntajes parciales ponderados más el punto base.
 
