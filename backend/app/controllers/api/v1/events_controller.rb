@@ -3,8 +3,8 @@ class API::V1::EventsController < ApplicationController
     include Authenticable
     #Image = flyer
     respond_to :json
-    before_action :set_event, only: [:show, :update, destroy]
-    before_action :verify_jwt_token, only: [:create, :update, :destroy]
+    before_action :set_event, only: [:show, :update]
+    before_action :verify_jwt_token, only: [:create, :update]
     
     # `GET /api/v1/events/:id`
     def show
@@ -39,7 +39,7 @@ class API::V1::EventsController < ApplicationController
         else
           render json: @event.errors, status: :unprocessable_entity
         end
-      end
+    end
       
 
       private
@@ -65,4 +65,5 @@ class API::V1::EventsController < ApplicationController
         authenticate_user!
         head :unauthorized unless current_user
       end
-      
+
+    end
