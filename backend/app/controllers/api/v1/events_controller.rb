@@ -1,7 +1,7 @@
 class API::V1::EventsController < ApplicationController
     include ImageProcessing
     include Authenticable
-
+    #Image = flyer
     respond_to :json
     before_action :set_event, only: [:show, :update, destroy]
     before_action :verify_jwt_token, only: [:create, :update, :destroy]
