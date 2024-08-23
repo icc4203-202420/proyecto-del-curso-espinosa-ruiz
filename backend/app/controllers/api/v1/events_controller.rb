@@ -8,9 +8,9 @@ class API::V1::EventsController < ApplicationController
     
     # `GET /api/v1/events/:id`
     def show
-        if @event.image.attached?
+        if @event.flyer.attached?
             render json: @event.as_json.merge({
-                image_url: url_for(@event.image),
+                image_url: url_for(@event.flyer),
                 thumbnail_url: url_for(@event.thumbnail)}),
                 status: :ok
         else
@@ -56,7 +56,7 @@ class API::V1::EventsController < ApplicationController
       
       def handle_image_attachment
         decoded_image = decode_image(event_params[:image_base64])
-        @event.image.attach(io: decoded_image[:io], 
+        @event.flyer.attach(io: decoded_image[:io], 
           filename: decoded_image[:filename], 
           content_type: decoded_image[:content_type])
       end 
