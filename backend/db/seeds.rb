@@ -54,5 +54,3 @@ if Rails.env.development?
 
 
 end
-
-e1 = 

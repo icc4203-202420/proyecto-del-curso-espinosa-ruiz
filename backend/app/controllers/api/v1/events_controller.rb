@@ -6,6 +6,13 @@ class API::V1::EventsController < ApplicationController
     before_action :set_event, only: [:show, :update]
     before_action :verify_jwt_token, only: [:create, :update]
     
+    before_action :set_bar
+
+    def index
+      @events = @bar.events
+      render json: { events: @events }, status: :ok
+    end
+
     # `GET /api/v1/events/:id`
     def show
         if @event.image.attached?
@@ -48,6 +55,10 @@ class API::V1::EventsController < ApplicationController
         @event = Event.find_by(id: params[:id])
         render json: { error: 'Event not found' }, status: :not_found if @event.nil?
       end  
+
+      def set_bar
+        @bar = Bar.find(params[:bar_id])
+      end
       
       def event_params
         params.require(:event).permit(:name, :description, :date, :bar_id, 

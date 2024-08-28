@@ -1,0 +1,83 @@
+body {
+    background-color: #FFFFDD;
+  }
+  
+  .navbar-toggle {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1100;
+  }
+  
+  .navbar-toggle img {
+    width: 30px;
+  }
+  
+  .navbar-toggle.hidden {
+    display: none; /* Oculta el botón cuando el navbar está abierto */
+  }
+  
+  .navbar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 255px;
+    height: 860px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    box-shadow: 0px 16px 24px 0px rgba(0, 0, 0, 0.14), 0px 6px 30px 0px rgba(0, 0, 0, 0.12), 0px 8px 10px 0px rgba(0, 0, 0, 0.20);
+  }
+  
+  .menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    background: rgba(115, 176, 171, 0.44);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    font-family: 'Irish Grover', cursive;
+    font-size: 24px;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+  
+  .menu-header h2 {
+    margin: 0;
+  }
+  
+  .close-navbar {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .navbar {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: auto;
+  }
+  
+  .navbar a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #333;
+    text-align: center;
+    width: 100%; /* Asegura que el sombreado ocupe todo el ancho del navbar */
+    box-sizing: border-box; /* Incluye el padding dentro del ancho */
+  }
+  
+  .navbar a:hover {
+    background-color: #f0f0f0;
+  }
+  
