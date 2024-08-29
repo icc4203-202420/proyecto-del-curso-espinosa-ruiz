@@ -1,11 +1,28 @@
 class API::V1::UsersController < ApplicationController
   respond_to :json
-  before_action :set_user, only: [:show, :update, :friendships, :create_friendship]
-  before_action :authenticate_user!, only: [:friendships, :create_friendship, :update]  
+  # before_action :set_user, only: [:show, :update, :friendships, :create_friendship]
+  # before_action :authenticate_user!, only: [:friendships, :create_friendship, :update]  
   
   def index
     @users = User.includes(:reviews, :address).all   
+    render json: @users, status: :ok
   end
+
+  def show
+    @user = User.find(params[:id])
+    render json: @user, status: :ok
+  end
+  
+  # PATCH/PUT /api/v1/users/:id
+  def update
+    if @user.update(user_params)
+      render json: { message: 'User updated successfully' }, status: :ok
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+  end
+  
+  private
 
 
   # GET /api/v1/users/:id/friendships

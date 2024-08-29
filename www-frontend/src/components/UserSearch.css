@@ -1,3 +1,45 @@
 @import './SharedStyles.css';
 
+.user-search {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 1rem;
+  color: #000
+}
+
+.loading{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 2rem;
+    color: #000;
+}
+
+.user-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #000;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+}
+
+.user-info-card {
+    border: 1px solid #000;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #f0f0f0;
+  }
+  
+  .user-info-card h2 {
+    margin-top: 0;
+  }
+  
+  .user-info-card p {
+    margin: 5px 0;
+  }
+
 /* Aquí agregas solo las reglas específicas de BeerList */

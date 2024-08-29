@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './BeerList.css';
 import searchIcon from '../assets/search-icon.svg'; // Importa el ícono de búsqueda
 
 function BeerList() {
   const [search, setSearch] = useState('');
+  const [beers, setBeers] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3001/api/v1/beers')
+      .then(response => response.json())
+      .then(data => setBeers(data.beers))
+      .catch(error => console.error('Error fetching beers:', error));
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -27,6 +35,11 @@ function BeerList() {
           </button>
         </form>
       </div>
+      <ul className='beer-list'>
+        {beers.map(beer => (
+          <li key={beer.id}>{beer.name}</li>
+        ))}
+      </ul>
     </div>
   );
 }

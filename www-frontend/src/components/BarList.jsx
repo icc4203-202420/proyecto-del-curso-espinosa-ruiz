@@ -7,7 +7,7 @@ function BarList() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetch('/api/v1/bars')
+    fetch('http://localhost:3001/api/v1/bars')
       .then(response => response.json())
       .then(data => setBars(data.bars))
       .catch(error => console.error('Error fetching bars:', error));
@@ -17,6 +17,7 @@ function BarList() {
     e.preventDefault();
     console.log(`Searching for bar with name: ${search}`);
   };
+
 
   return (
     <div className="container">
@@ -35,9 +36,9 @@ function BarList() {
           </button>
         </form>
       </div>
-      <ul>
+      <ul className='bar-list'>
         {bars.map(bar => (
-          <li key={bar.id}>{bar.name}</li>
+          <li key={bar.id}>{bar.name} </li>
         ))}
       </ul>
     </div>

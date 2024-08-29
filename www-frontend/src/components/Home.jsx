@@ -1,9 +1,10 @@
 import React from 'react';
+import './SharedStyles.css';
 
 function Home() {
   return (
     <div>
-      <h1>Welcome to Beer App</h1>
+      <h1 className='title'>Welcome to Beer App</h1>
     </div>
   );
 }
