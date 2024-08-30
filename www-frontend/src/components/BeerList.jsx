@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './BeerList.css';
 import searchIcon from '../assets/search-icon.svg'; // Importa el ícono de búsqueda
+import likeIcon from  '../assets/like-icon.svg'; 
 
 function BeerList() {
   const [search, setSearch] = useState('');
@@ -35,9 +36,23 @@ function BeerList() {
           </button>
         </form>
       </div>
-      <ul className='beer-list'>
+      <ul className="beer-list">
         {beers.map(beer => (
-          <li key={beer.id}>{beer.name}</li>
+          <li key={beer.id} className="beer-item">
+            <div className="beer-card">
+              <div className="beer-image-placeholder">
+                {/* Aquí puedes agregar la imagen de la cerveza */}
+              </div>
+              <div className="beer-info">
+                <h2 className="beer-name">{beer.name}</h2>
+                <p className="beer-manufacturer">{beer.manufacturer}</p>
+                <p className="beer-description">{beer.description}</p>
+              </div>
+              <div className="beer-heart-placeholder">
+              <img src={likeIcon} alt="Like" />
+              </div>
+            </div>
+          </li>
         ))}
       </ul>
     </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './BarList.css';
 import searchIcon from '../assets/search-icon.svg';
 
@@ -18,7 +19,6 @@ function BarList() {
     console.log(`Searching for bar with name: ${search}`);
   };
 
-
   return (
     <div className="container">
       <h1 className="title">Bars</h1>
@@ -36,9 +36,22 @@ function BarList() {
           </button>
         </form>
       </div>
-      <ul className='bar-list'>
+      <ul className="bar-list">
         {bars.map(bar => (
-          <li key={bar.id}>{bar.name} </li>
+          <li key={bar.id} className="bar-item">
+            <div className="bar-card">
+              <div className="bar-image-placeholder"></div>
+              <div className="bar-info">
+                <h2 className="bar-name">{bar.name}</h2>
+                <p className="bar-location">{bar.location || 'Location not available'}</p>
+                <p className="bar-description">{bar.description || 'No description available'}</p>
+              </div>
+              <Link to={`/bars/${bar.id}/events`} className="events-button">
+                View Events
+              </Link>
+
+            </div>
+          </li>
         ))}
       </ul>
     </div>

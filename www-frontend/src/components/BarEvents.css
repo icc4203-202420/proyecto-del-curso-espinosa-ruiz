@@ -1,0 +1,67 @@
+@import './SharedStyles.css';
+
+.bar-events {
+    background-color: #fff6e5;
+    padding: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+  }
+  
+  .events-title {
+    font-size: 24px;
+    color: #000;
+    margin-bottom: 20px;
+  }
+  
+  .events-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .event-item {
+    background-color: #fff;
+    border: 2px solid #000;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .event-content {
+    display: flex;
+    align-items: center;
+  }
+  
+  .event-icon {
+    font-size: 40px;
+    margin-right: 15px;
+  }
+  
+  .event-name {
+    font-size: 20px;
+    margin: 0;
+  }
+  
+  .event-date {
+    font-size: 16px;
+    color: #999;
+    margin: 5px 0;
+  }
+  
+  .event-description {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .event-actions {
+    margin-left: auto;
+  }
+  
+  .event-link {
+    margin-right: 20px;
+    color: #6b3fb7;
+    font-size: 14px;
+    text-decoration: none;
+  }

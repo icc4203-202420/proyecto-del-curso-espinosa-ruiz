@@ -7,3 +7,78 @@
   color: #000
 }
 /* Aquí agregas solo las reglas específicas de BeerList */
+
+/* Lista de bares */
+.bar-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+/* Elemento individual de la lista de bares */
+.bar-item {
+  margin-bottom: 20px;
+}
+
+/* Tarjeta de presentación del bar */
+.bar-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  background-color: #FAFAFA;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Marcador de posición para la imagen del bar */
+.bar-image-placeholder {
+  width: 50px;
+  height: 50px;
+  background-color: #E0E0E0;
+  border-radius: 50%;
+}
+
+/* Contenedor de la información del bar */
+.bar-info {
+  flex: 1;
+  margin-left: 15px;
+  text-align: left;
+}
+
+/* Nombre del bar */
+.bar-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  color: #000;
+}
+
+/* Ubicación del bar */
+.bar-location {
+  font-size: 14px;
+  color: #888;
+  margin: 5px 0;
+}
+
+/* Descripción del bar */
+.bar-description {
+  font-size: 12px;
+  color: #AAA;
+  margin: 0;
+}
+
+/* Botón para ver eventos */
+.events-button {
+  padding: 8px 12px;
+  background-color: #73B0AB;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.events-button:hover {
+  background-color: #5f8e8c;
+}

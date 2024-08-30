@@ -7,3 +7,72 @@
   color: #000
 }
 /* Aquí agregas solo las reglas específicas de BeerList */
+
+/* Lista de cervezas */
+.beer-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+/* Elemento individual de la lista de cervezas */
+.beer-item {
+  margin-bottom: 20px;
+}
+
+/* Tarjeta de presentación de la cerveza */
+.beer-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  background-color: #FAFAFA;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Marcador de posición para la imagen de la cerveza */
+.beer-image-placeholder {
+  width: 50px;
+  height: 50px;
+  background-color: #E0E0E0;
+  border-radius: 50%;
+}
+
+/* Contenedor de la información de la cerveza */
+.beer-info {
+  flex: 1;
+  margin-left: 15px;
+  text-align: left;
+}
+
+/* Nombre de la cerveza */
+.beer-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  color: #000;
+}
+
+/* Nombre del fabricante de la cerveza */
+.beer-manufacturer {
+  font-size: 14px;
+  color: #888;
+  margin: 5px 0;
+}
+
+/* Descripción de la cerveza */
+.beer-description {
+  font-size: 12px;
+  color: #AAA;
+  margin: 0;
+}
+
+/* Marcador de posición para el ícono del corazón */
+.beer-heart-placeholder {
+  width: 20px;
+  height: 20px;
+  background-color: #E0E0E0;
+  border-radius: 50%;
+}
