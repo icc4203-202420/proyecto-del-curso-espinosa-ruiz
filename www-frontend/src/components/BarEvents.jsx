@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import './BarEvents.css';
 import Divider from '../assets/divider.svg';
 import likeIcon from  '../assets/like-icon.svg'; 
+import backIcon from '../assets/back-icon.svg';
+
 import { useEffect, useState } from 'react';
 
 function BarEvents() {
@@ -10,7 +12,6 @@ function BarEvents() {
   const [barName, setbarName] = useState([]);
   const actualUrl = window.location.href;
   const barId = actualUrl.split('/')[4];
-
 
   useEffect(() => {
     fetch(`http://localhost:3001/api/v1/bars/${barId}`)
@@ -32,9 +33,15 @@ function BarEvents() {
       .catch(error => console.error('Error fetching events:', error));
   }, [barId]);
 
-
   return (
     <div className="bar-events">
+      
+      <div className="back-button-container">
+        <Link to="/bars">
+          <img src={backIcon} alt="Back" />
+        </Link>
+      </div>
+
       <h2 className="events-title">Future events at: {barName}</h2>
       <img src={Divider} alt="Divider" />
       <ul className="events-list">
