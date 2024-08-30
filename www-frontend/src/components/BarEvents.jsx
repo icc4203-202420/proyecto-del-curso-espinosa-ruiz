@@ -3,29 +3,35 @@ import { Link } from 'react-router-dom';
 import './BarEvents.css';
 import Divider from '../assets/divider.svg';
 import likeIcon from  '../assets/like-icon.svg'; 
+import { useEffect, useState } from 'react';
 
-function BarEvents({ barName }) {
-  // Datos de ejemplo para los eventos
-  const events = [
-    {
-      id: 1,
-      name: 'Live Music Night',
-      date: '2024-09-01',
-      description: 'Join us for an amazing live music night!',
-    },
-    {
-      id: 2,
-      name: 'Karaoke Friday',
-      date: '2024-09-08',
-      description: 'Show off your singing talent at our karaoke event!',
-    },
-    {
-      id: 3,
-      name: 'Comedy Show',
-      date: '2024-09-15',
-      description: 'Get ready for a night full of laughter with our comedy show!',
-    },
-  ];
+function BarEvents() {
+  const [events, setEvents] = useState([]);
+  const [barName, setbarName] = useState([]);
+  const actualUrl = window.location.href;
+  const barId = actualUrl.split('/')[4];
+
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/api/v1/bars/${barId}`)
+      .then(response => response.json())
+      .then(data => {
+        setbarName(data.bar.name);
+      })
+      .catch(error => console.error('Error fetching bar:', error));
+  }, [barId]);
+
+  useEffect(() => {
+    fetch('http://localhost:3001/api/v1/events')
+      .then(response => response.json())
+      .then(data => {
+        // Filtrar eventos por barId después de cargarlos
+        const filteredEvents = data.events.filter(event => event.bar_id == barId);
+        setEvents(filteredEvents);
+      })
+      .catch(error => console.error('Error fetching events:', error));
+  }, [barId]);
+
 
   return (
     <div className="bar-events">

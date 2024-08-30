@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './BarList.css';
 import searchIcon from '../assets/search-icon.svg';
+import BarEvents from './BarEvents';
 
 function BarList() {
   const [bars, setBars] = useState([]);
@@ -46,7 +47,7 @@ function BarList() {
                 <p className="bar-location">{bar.location || 'Location not available'}</p>
                 <p className="bar-description">{bar.description || 'No description available'}</p>
               </div>
-              <Link to={`/bars/${bar.id}/events`} className="events-button">
+              <Link to={`/bars/${bar.id}/events#info`} className="events-button">
                 View Events
               </Link>
 
