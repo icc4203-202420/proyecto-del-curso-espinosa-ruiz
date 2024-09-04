@@ -45,3 +45,26 @@ body {
   button[type="submit"]:hover {
     background-color: #0056b3; 
   }
+
+  .beer-details {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+  }
+  
+  .beer-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+  }
+  
+  .beer-details h2, .beer-details h3 {
+    color: #333;
+  }
+  
+  .beer-details p, .beer-details div {
+    color: #666;
+    margin: 10px 0;
+}

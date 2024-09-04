@@ -1,21 +1,32 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+// src/components/Navbar.jsx
+import React, { useState }  from 'react';
+import { Link , useNavigate} from 'react-router-dom';
+import { useAuth, AuthProvider } from '../components/AuthContext';
 import './Navbar.css';
 import menuIcon from '../assets/menu-icon.svg';
 
+
+
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const {logout} = useAuth();
+  const navigate = useNavigate();
+
 
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleLogout = () => {
+    logout()
+    toggleNavbar();
+    navigate('/login');
+  }
+
   return (
     <>
-      <button
-        onClick={toggleNavbar}
-        className={`navbar-toggle ${isOpen ? 'hidden' : ''}`} // Añadimos la clase 'hidden' cuando el navbar está abierto
-      >
+      <button onClick={toggleNavbar} className={`navbar-toggle ${isOpen ? 'hidden' : ''}`}>
         <img src={menuIcon} alt="Menu" />
       </button>
       {isOpen && (
@@ -28,9 +39,19 @@ function Navbar() {
           </div>
           <nav className="navbar">
             <Link to="/" onClick={toggleNavbar}>Home</Link>
-            <Link to="/beers" onClick={toggleNavbar}>Beers</Link>
-            <Link to="/bars" onClick={toggleNavbar}>Bars</Link>
-            <Link to="/user-search" onClick={toggleNavbar}>Search Users</Link>
+            {isAuthenticated ? (
+              <>
+                <Link to="/user-search" onClick={toggleNavbar}>Search Users</Link>
+                <Link to="/beers" onClick={toggleNavbar}>Beers</Link>
+                <Link to="/bars" onClick={toggleNavbar}>Bars</Link>
+                <button onClick={handleLogout}>Logout</button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" onClick={toggleNavbar}>Login</Link>
+                <Link to="/register" onClick={toggleNavbar}>Register</Link>
+              </>
+            )}
           </nav>
         </div>
       )}

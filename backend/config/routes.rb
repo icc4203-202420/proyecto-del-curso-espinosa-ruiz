@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       resources :bars
       resources :beers
       resources :events
-      resources :users do
+      resources :users, only: [:index, :show, :create, :update] do
         get 'friendships', on: :member
         post 'friendships', on: :member
         resources :reviews, only: [:index]

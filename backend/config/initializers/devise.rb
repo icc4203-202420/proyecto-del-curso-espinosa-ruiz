@@ -135,7 +135,7 @@ Devise.setup do |config|
   # config.send_password_change_notification = false
 
   # ==> Configuration for :confirmable
-  # A period that the user is allowed to access the website even without
+  # A period that the user is allo:registerablewed to access the website even without
   # confirming their account. For instance, if set to 2.days, the user will be
   # able to access the website for two days without confirming their account,
   # access will be blocked just in the third day.

@@ -18,12 +18,12 @@ end
 
 # GET /beers/:id
 def show
-  @beer = Beer.includes(:bars, :reviews).find(params[:id])
+  @beer = Beer.includes(:bars, :reviews, :brand).find(params[:id])
   average_rating = @beer.average_rating
   user_review = @beer.reviews.find_by(user_id: current_user.id) if current_user
   other_reviews = @beer.reviews.where.not(user_id: current_user.id) if current_user
 
-  response = @beer.as_json(include: [ :bars]).merge({
+  response = @beer.as_json(include: [ :bars,{ brand: { include: :brewery }}]).merge({
     average_rating: average_rating,
     user_review: user_review,
     other_reviews: other_reviews

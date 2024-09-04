@@ -8,13 +8,19 @@ import BarList from './components/BarList';
 import BarEvents from './components/BarEvents';
 import UserSearch from './components/UserSearch';
 import BeerShow from './components/BeerShow';
+import Login from './components/Login';
+import Register from './components/Register';
+import { AuthProvider } from './components/AuthContext';
 
 function App() {
   return (
     <Router>
+      <AuthProvider>
       <Navbar />  {/* Navbar is included here, so it appears on all pages */}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/beers" element={<BeerList />} />
         <Route path="/beers/:id" element={<BeerShow />} />
         <Route path="/bars" element={<BarList />} />
@@ -22,6 +28,7 @@ function App() {
         <Route path="/user-search" element={<UserSearch />} />
         <Route path="*" element={<div><h1>Page Not Found</h1></div>} />
       </Routes>
+      </AuthProvider>
     </Router>
   );
 }
