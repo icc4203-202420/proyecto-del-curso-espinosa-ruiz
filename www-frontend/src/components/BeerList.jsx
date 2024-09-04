@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './BeerList.css';
 import searchIcon from '../assets/search-icon.svg'; // Importa el ícono de búsqueda
 import likeIcon from  '../assets/like-icon.svg'; 
+import { Link } from 'react-router-dom';
 
 function BeerList() {
   const [search, setSearch] = useState('');
@@ -44,7 +45,7 @@ function BeerList() {
                 {/* Aquí puedes agregar la imagen de la cerveza */}
               </div>
               <div className="beer-info">
-                <h2 className="beer-name">{beer.name}</h2>
+                <h2 className="beer-name"><Link to={`/beers/${beer.id}`} >{beer.name}</Link></h2>
                 <p className="beer-manufacturer">{beer.manufacturer}</p>
                 <p className="beer-description">{beer.description}</p>
               </div>

@@ -7,6 +7,7 @@ import BeerList from './components/BeerList';
 import BarList from './components/BarList';
 import BarEvents from './components/BarEvents';
 import UserSearch from './components/UserSearch';
+import BeerShow from './components/BeerShow';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/beers" element={<BeerList />} />
+        <Route path="/beers/:id" element={<BeerShow />} />
         <Route path="/bars" element={<BarList />} />
         <Route path="/bars/:id/events" element={<BarEvents />} />
         <Route path="/user-search" element={<UserSearch />} />

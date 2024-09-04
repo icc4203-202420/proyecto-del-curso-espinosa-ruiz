@@ -24,4 +24,11 @@ class Beer < ApplicationRecord
       update(avg_rating: 0.0)
     end
   end  
+
+  def average_rating
+    return 0 if reviews.empty?
+    reviews.average(:rating).to_f.round(2)
+  end
+
+
 end
