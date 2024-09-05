@@ -5,10 +5,13 @@ class API::V1::SessionsController < Devise::SessionsController
   def respond_with(current_user, _opts = {})
     render json: {
       status: { 
-        code: 200, message: 'Logged in successfully.',
-        data: { user: UserSerializer.new(current_user).serializable_hash[:data][:attributes] }
+        code: 200, message: {current_user: current_user},
+        data: { user: UserSerializer.new(current_user).serializable_hash[:data][:attributes] },
+        token: request.env['warden-jwt_auth.token']
+        
       }
     }, status: :ok
+    
   end
   def respond_to_on_destroy
     if request.headers['Authorization'].present?

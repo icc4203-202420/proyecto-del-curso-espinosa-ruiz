@@ -25,18 +25,17 @@ function Login() {
         }
         }),
       });
-  
+      console.log(response);
       if (!response.ok) {
         throw new Error('Error en el inicio de sesión');
       }
   
       const data = await response.json();
       console.log('Inicio de sesión exitoso:', data);
-      login(data.token)
+      login(data.status.token)
+      console.log(data.status.token)
       navigate('/');
-      // Aquí puedes almacenar el token de acceso en localStorage, por ejemplo:
-      
-      // Y luego redirigir al usuario o cambiar el estado de la aplicación
+
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
     }

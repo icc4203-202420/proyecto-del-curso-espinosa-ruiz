@@ -2,6 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import './BeerShow.css';
 
+function ReviewsForm({ beerId, onNewReview }) {
+    const [text, setText] = useState('');
+    const [rating, setRating] = useState('');
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      // Aquí deberías enviar la reseña a tu API
+      // Por ejemplo: axios.post('/api/reviews', { beerId, text, rating })
+      console.log('Submitting review:', { beerId, text, rating });
+      // Llamar a onNewReview para actualizar la lista de reseñas en el componente padre
+      onNewReview({ text, rating, beerId });
+      // Limpiar el formulario
+      setText('');
+      setRating('');
+    };
+  
+    return (
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="reviewText">Review:</label>
+          <textarea id="reviewText" value={text} onChange={(e) => setText(e.target.value)} />
+        </div>
+        <div>
+          <label htmlFor="reviewRating">Rating:</label>
+          <input type="number" id="reviewRating" value={rating} onChange={(e) => setRating(e.target.value)} />
+        </div>
+        <button type="submit">Submit Review</button>
+      </form>
+    );
+  }
+
 const BeerShow = () => {
   const [beer, setBeer] = useState(null);
   const actualUrl = window.location.href;
@@ -13,6 +44,11 @@ const BeerShow = () => {
       .then(data => setBeer(data))
       .catch(error => console.error('Error fetching beer details:', error));
   }, [beerId]);
+
+  const handleNewReview = (review) => {
+    // Aquí deberías actualizar el estado para incluir la nueva reseña
+    console.log('New review added:', review);
+  };
 
   if (!beer) return <div>Loading...</div>;
 
@@ -60,18 +96,8 @@ const BeerShow = () => {
         )}
         <div>
         <h3>Add a Review</h3>
-        <form>
-            <div>
-            <label htmlFor="content">Content:</label>
-            <textarea id="content" name="content"></textarea>
-            </div>
-            <div>
-            <label htmlFor="rating">Rating:</label>
-            <input type="number" id="rating" name="rating" min="1" max="5" />
-            </div>
-            <button type="submit">Submit Review</button>
-        </form>
-        </div>
+        <ReviewsForm beerId={beerId} onNewReview={handleNewReview} />
+      </div>
       </div>
       <p></p>
       <div>
