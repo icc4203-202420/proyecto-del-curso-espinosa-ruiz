@@ -6,30 +6,38 @@ class API::V1::BeersController < ApplicationController
   before_action :set_beer, only: [:show, :update, :destroy]
   before_action :verify_jwt_token, only: [:create, :update, :destroy]
 
-  # GET /beers
-  def index
+# GET /beers
+def index
+  if params[:search]
+    @beers = Beer.includes(:bars).where("name LIKE ?", "%#{params[:search]}%")
+  else
     @beers = Beer.all
-    render json: { beers: @beers }, status: :ok
+  end
+  render json: { beers: @beers }, status: :ok
+end
+
+# GET /beers/:id
+def show
+  @beer = Beer.includes(:bars, :reviews, :brand).find(params[:id])
+  average_rating = @beer.average_rating
+  user_review = @beer.reviews.find_by(user_id: current_user.id) if current_user
+  other_reviews = @beer.reviews.where.not(user_id: current_user.id) if current_user
+
+  response = @beer.as_json(include: [ :bars,{ brand: { include: :brewery }}]).merge({
+    average_rating: average_rating,
+    user_review: user_review,
+    other_reviews: other_reviews
+  })
+
+  if @beer.image.attached?
+    response.merge!({
+      image_url: url_for(@beer.image),
+      thumbnail_url: url_for(@beer.thumbnail)
+    })
   end
 
-  # def index
-  #   @beers = Rails.cache.fetch("beers", expires_in: 12.hours) do
-  #     Beer.includes(:brand, :brewery).all
-  #   end
-  #   render json: @beers
-  # end
-  
-  # GET /beers/:id
-  def show
-    if @beer.image.attached?
-      render json: @beer.as_json.merge({ 
-        image_url: url_for(@beer.image), 
-        thumbnail_url: url_for(@beer.thumbnail)}),
-        status: :ok
-    else
-      render json: { beer: @beer.as_json }, status: :ok
-    end 
-  end
+  render json: response, status: :ok
+end
 
   # POST /beers
   def create
@@ -85,4 +93,6 @@ class API::V1::BeersController < ApplicationController
     authenticate_user!
     head :unauthorized unless current_user
   end  
+
+  
 end

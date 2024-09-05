@@ -2,22 +2,38 @@ import React, { useEffect, useState } from 'react';
 import './BeerList.css';
 import searchIcon from '../assets/search-icon.svg'; // Importa el ícono de búsqueda
 import likeIcon from  '../assets/like-icon.svg'; 
+import { Link, useNavigate } from 'react-router-dom';
 
 function BeerList() {
   const [search, setSearch] = useState('');
   const [beers, setBeers] = useState([]);
+  const [originalBeers, setOriginalBeers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('http://localhost:3001/api/v1/beers')
       .then(response => response.json())
-      .then(data => setBeers(data.beers))
+      .then(data => {
+        setBeers(data.beers)
+        setOriginalBeers(data.beers);})
       .catch(error => console.error('Error fetching beers:', error));
   }, []);
 
   const handleSearch = (e) => {
-    e.preventDefault();
-    console.log(`Searching for beer with name: ${search}`);
-  };
+  e.preventDefault();
+
+  if (!search.trim()) {
+    setBeers(originalBeers);
+    return;
+  }
+
+  const filteredBeers = originalBeers.filter(beer => beer.name.toLowerCase().includes(search.toLowerCase()));
+  setBeers(filteredBeers);
+
+  if (filteredBeers.length === 0) {
+    console.log('No beers found with that name');
+  }
+};
 
   return (
     <div className="container">
@@ -44,7 +60,7 @@ function BeerList() {
                 {/* Aquí puedes agregar la imagen de la cerveza */}
               </div>
               <div className="beer-info">
-                <h2 className="beer-name">{beer.name}</h2>
+                <h2 className="beer-name"><Link to={`/beers/${beer.id}`} >{beer.name}</Link></h2>
                 <p className="beer-manufacturer">{beer.manufacturer}</p>
                 <p className="beer-description">{beer.description}</p>
               </div>

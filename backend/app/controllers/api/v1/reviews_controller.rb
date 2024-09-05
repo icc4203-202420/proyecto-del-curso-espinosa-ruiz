@@ -4,7 +4,12 @@ class API::V1::ReviewsController < ApplicationController
   before_action :set_review, only: [:show, :update, :destroy]
 
   def index
-    @reviews = Review.where(user: @user)
+    # Filtrar reseñas por usuario y opcionalmente por cerveza
+    if params[:beer_id]
+      @reviews = Review.where(user: @user, beer_id: params[:beer_id])
+    else
+      @reviews = Review.where(user: @user)
+    end
     render json: { reviews: @reviews }, status: :ok
   end
 
