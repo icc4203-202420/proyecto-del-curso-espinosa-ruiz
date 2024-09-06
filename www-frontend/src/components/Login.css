@@ -1,40 +1,76 @@
+/* Contenedor principal del formulario de inicio de sesión */
 .login-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-  }
-  
-  .login-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .login-form div {
-    margin-bottom: 15px;
-  }
-  
-  .login-form label {
-    margin-bottom: 5px;
-  }
-  
-  .login-form input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .login-form button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .login-form button:hover {
-    background-color: #0056b3;
-  }
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #FFFFDD; /* Color de fondo similar al registro */
+  font-family: 'Comic Sans MS', cursive, sans-serif; /* Misma fuente que en el registro */
+}
+
+/* Estilos para el formulario */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #E5F5E5; /* Color de fondo similar al registro */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* Sección de cada campo */
+.login-form div {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+/* Estilos para las etiquetas */
+.login-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Estilo para los campos de entrada */
+.login-form input {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 30px;
+  background-color: #73B0AB; /* Color del input similar al registro */
+  color: #fff;
+  font-size: 16px;
+  text-align: center;
+  box-sizing: border-box; /* Evita que los inputs se salgan del contenedor */
+}
+
+/* Estilos para el botón de inicio de sesión */
+.login-form button {
+  padding: 15px;
+  background-color: #ff0077;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  width: 80%;
+  font-size: 18px;
+}
+
+/* Hover en el botón */
+.login-form button:hover {
+  background-color: #e6006f;
+}
+
+/* Estilos para el enlace de registro */
+.login-form a {
+  color: #ff0077;
+  text-decoration: none;
+  font-size: 14px;
+  margin-top: 20px;
+  display: block;
+}
+
+.login-form a:hover {
+  text-decoration: underline;
+}

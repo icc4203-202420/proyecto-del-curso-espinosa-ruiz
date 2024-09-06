@@ -43,12 +43,14 @@ function Login() {
 
   return (
     <div className="login-container">
+      <h1 className="title">Welcome Back!</h1>
       <form onSubmit={handleSubmit} className="login-form">
         <div>
           <label htmlFor="Email">Email:</label>
           <input
             type="text"
             id="Email"
+            placeholder='Enter your email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -58,17 +60,13 @@ function Login() {
           <input
             type="password"
             id="password"
+            placeholder='Enter your password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <button type="submit">Login</button>
-        <p></p>
-        <button type="button">
-        <Link to="/register" style={{ textDecoration: 'none', color: 'inherit' }}>
-            Register
-        </Link>
-        </button>
+        <Link to="/register">Don't have an account? Register</Link>
       </form>
     </div>
   );
