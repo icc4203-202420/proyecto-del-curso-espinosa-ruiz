@@ -8,4 +8,4 @@ class API::V1::CurrentUserController < ApplicationController
         render json: { error: "No user logged in" }, status: :unauthorized
       end
     end
-  end
+end
