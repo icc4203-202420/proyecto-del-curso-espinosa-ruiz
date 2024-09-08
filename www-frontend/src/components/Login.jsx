@@ -19,27 +19,36 @@ function Login() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            user:{
-          email: email,
-          password: password,
-        }
+          user: {
+            email: email,
+            password: password,
+          }
         }),
       });
-      console.log(response);
+  
       if (!response.ok) {
         throw new Error('Error en el inicio de sesión');
       }
   
       const data = await response.json();
-      console.log('Inicio de sesión exitoso:', data);
-      login(data.status.token)
-      console.log(data.status.token)
-      navigate('/');
-
+      console.log('Inicio de sesión exitoso. Datos de respuesta:', data);
+  
+      // Si el token está en data.status.token
+      const token = data.status.token;
+      if (token) {
+        localStorage.setItem('jwtToken', token);
+        login(token);
+        navigate('/');
+      } else {
+        throw new Error('Token no encontrado en la respuesta');
+      }
+  
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
     }
   };
+  
+  
 
   return (
     <div className="login-container">

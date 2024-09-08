@@ -11,29 +11,55 @@ function BeerList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/v1/beers')
-      .then(response => response.json())
+    const token = localStorage.getItem('jwtToken'); // Obtener el token desde localStorage
+
+    if (!token) {
+      console.error('No token found, redirecting to login');
+      navigate('/login'); // Redirigir al login si no hay token
+      return;
+    }
+
+    fetch('http://localhost:3001/api/v1/beers', {
+      headers: {
+        'Authorization': `Bearer ${token}` // Incluir el token en las cabeceras
+      }
+    })
+      .then(response => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            throw new Error('Unauthorized');
+          }
+          throw new Error('Error fetching beers');
+        }
+        return response.json();
+      })
       .then(data => {
-        setBeers(data.beers)
-        setOriginalBeers(data.beers);})
-      .catch(error => console.error('Error fetching beers:', error));
-  }, []);
+        setBeers(data.beers);
+        setOriginalBeers(data.beers);
+      })
+      .catch(error => {
+        console.error('Error fetching beers:', error);
+        if (error.message === 'Unauthorized') {
+          navigate('/login'); // Redirigir al login en caso de error 401
+        }
+      });
+  }, [navigate]);
 
   const handleSearch = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!search.trim()) {
-    setBeers(originalBeers);
-    return;
-  }
+    if (!search.trim()) {
+      setBeers(originalBeers);
+      return;
+    }
 
-  const filteredBeers = originalBeers.filter(beer => beer.name.toLowerCase().includes(search.toLowerCase()));
-  setBeers(filteredBeers);
+    const filteredBeers = originalBeers.filter(beer => beer.name.toLowerCase().includes(search.toLowerCase()));
+    setBeers(filteredBeers);
 
-  if (filteredBeers.length === 0) {
-    console.log('No beers found with that name');
-  }
-};
+    if (filteredBeers.length === 0) {
+      console.log('No beers found with that name');
+    }
+  };
 
   return (
     <div className="container">
@@ -65,7 +91,7 @@ function BeerList() {
                 <p className="beer-description">{beer.description}</p>
               </div>
               <div className="beer-heart-placeholder">
-              <img src={likeIcon} alt="Like" />
+                <img src={likeIcon} alt="Like" />
               </div>
             </div>
           </li>

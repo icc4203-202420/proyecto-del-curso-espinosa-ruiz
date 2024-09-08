@@ -1,33 +1,63 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './BarEvents.css';
 import Divider from '../assets/divider.svg';
-import likeIcon from  '../assets/like-icon.svg'; 
+import likeIcon from '../assets/like-icon.svg'; 
 import backIcon from '../assets/back-icon.svg';
-
-import { useEffect, useState } from 'react';
 
 function BarEvents() {
   const [events, setEvents] = useState([]);
-  const [barName, setbarName] = useState([]);
+  const [barName, setBarName] = useState('');
   const actualUrl = window.location.href;
   const barId = actualUrl.split('/')[4];
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/v1/bars/${barId}`)
-      .then(response => response.json())
+    const token = localStorage.getItem('authToken'); // Obtener el token desde localStorage
+
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+
+    fetch(`http://localhost:3001/api/v1/bars/${barId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Incluir el token en la cabecera
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Unauthorized');
+        }
+        return response.json();
+      })
       .then(data => {
-        setbarName(data.bar.name);
+        setBarName(data.bar.name);
       })
       .catch(error => console.error('Error fetching bar:', error));
   }, [barId]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/v1/events')
-      .then(response => response.json())
+    const token = localStorage.getItem('authToken'); // Obtener el token desde localStorage
+
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+
+    fetch('http://localhost:3001/api/v1/events', {
+      headers: {
+        Authorization: `Bearer ${token}`, // Incluir el token en la cabecera
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Unauthorized');
+        }
+        return response.json();
+      })
       .then(data => {
         // Filtrar eventos por barId después de cargarlos
-        const filteredEvents = data.events.filter(event => event.bar_id == barId);
+        const filteredEvents = data.events.filter(event => event.bar_id === parseInt(barId, 10));
         setEvents(filteredEvents);
       })
       .catch(error => console.error('Error fetching events:', error));
@@ -35,7 +65,6 @@ function BarEvents() {
 
   return (
     <div className="bar-events">
-      
       <div className="back-button-container">
         <Link to="/bars">
           <img src={backIcon} alt="Back" />

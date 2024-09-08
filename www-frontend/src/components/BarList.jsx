@@ -2,17 +2,45 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './BarList.css';
 import searchIcon from '../assets/search-icon.svg';
-import BarEvents from './BarEvents';
 
 function BarList() {
   const [bars, setBars] = useState([]);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/v1/bars')
-      .then(response => response.json())
-      .then(data => setBars(data.bars))
-      .catch(error => console.error('Error fetching bars:', error));
+    const token = localStorage.getItem('jwtToken'); // Obtener el token del localStorage
+
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+
+    console.log('Using token:', token); // Verifica si el token está siendo obtenido correctamente
+
+    fetch('http://localhost:3001/api/v1/bars', {
+      headers: {
+        'Authorization': `Bearer ${token}`, // Incluir el token en la cabecera
+      }
+    })
+      .then(response => {
+        console.log('Response status:', response.status); // Verifica el estado de la respuesta
+        if (response.status === 401) {
+          throw new Error('Unauthorized'); // Maneja la falta de autorización
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Fetched data:', data); // Verifica los datos devueltos
+        if (data && data.bars) {
+          setBars(data.bars);
+        } else {
+          setBars([]);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching bars:', error);
+        setBars([]);
+      });
   }, []);
 
   const handleSearch = (e) => {
@@ -38,25 +66,29 @@ function BarList() {
         </form>
       </div>
       <ul className="bar-list">
-        {bars.map(bar => (
-          <li key={bar.id} className="bar-item">
-            <div className="bar-card">
-              <div className="bar-image-placeholder"></div>
-              <div className="bar-info">
-                <h2 className="bar-name">{bar.name}</h2>
-                <p className="bar-location">{bar.location || 'Location not available'}</p>
-                <p className="bar-description">{bar.description || 'No description available'}</p>
+        {bars && bars.length > 0 ? (
+          bars.map(bar => (
+            <li key={bar.id} className="bar-item">
+              <div className="bar-card">
+                <div className="bar-image-placeholder"></div>
+                <div className="bar-info">
+                  <h2 className="bar-name">{bar.name}</h2>
+                  <p className="bar-location">{bar.location || 'Location not available'}</p>
+                  <p className="bar-description">{bar.description || 'No description available'}</p>
+                </div>
+                <Link to={`/bars/${bar.id}/events#info`} className="events-button">
+                  View Events
+                </Link>
               </div>
-              <Link to={`/bars/${bar.id}/events#info`} className="events-button">
-                View Events
-              </Link>
-
-            </div>
-          </li>
-        ))}
+            </li>
+          ))
+        ) : (
+          <p>No bars available</p>
+        )}
       </ul>
     </div>
   );
 }
 
 export default BarList;
+    

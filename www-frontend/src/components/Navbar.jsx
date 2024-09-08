@@ -1,50 +1,55 @@
-// src/components/Navbar.jsx
-import React, { useState, useEffect }  from 'react';
-import { Link , useNavigate} from 'react-router-dom';
-import { useAuth, AuthProvider } from '../components/AuthContext';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../components/AuthContext'; // Asegúrate de que useAuth funcione correctamente
 import './Navbar.css';
 import menuIcon from '../assets/menu-icon.svg';
 
-
-
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
-
-
 
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
   };
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/v1/current_user', {
-      Authorization: localStorage.getItem('authToken') ? 'include' : 'same-origin', 
-    })
-      .then(response => response.json())
-      .then(data => setCurrentUser(data))
-      .catch(error => console.error('Error fetching user details:', error));
-  }, []); 
+    const token = localStorage.getItem('jwtToken'); // Usa la misma clave para el token
+    if (token) {
+      fetch('http://localhost:3001/api/v1/current_user', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(response => response.json())
+        .then(data => setCurrentUser(data))
+        .catch(error => console.error('Error fetching user details:', error));
+    } else {
+      setCurrentUser(null); // Si no hay token, no hay usuario
+    }
+  }, [isAuthenticated]); // Escucha el cambio en isAuthenticated
 
-  const handleLogout = () => {
-    const response = fetch('http://localhost:3001/api/v1/logout', {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-          user:{
-        email: currentUser.email,
-        password: currentUser.password,
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/v1/logout', {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('jwtToken')}`, // Usa la clave correcta
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        logout(); // Este método debe estar en tu AuthContext
+        navigate('/login');
+      } else {
+        console.error('Error en el logout:', await response.json());
       }
-      }),
-    });
-    toggleNavbar();
-    navigate('/login');
-  }
+    } catch (error) {
+      console.error('Error al intentar cerrar sesión:', error);
+    }
+  };
 
   return (
     <>

@@ -1,36 +1,37 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Register.css'; // Asegúrate de que la ruta sea correcta
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+// Esquema de validación con Yup
+const schema = yup.object().shape({
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  email: yup.string().email('Invalid email format').required('Email is required'),
+  username: yup.string().min(3, 'Username must be at least 3 characters').required('Username is required'),
+  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+  confirmPassword: yup
+    .string() 
+    .oneOf([yup.ref('password')], 'Passwords do not match')
+    .required('Confirm password is required'),
+});
 
 function Register() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [addressLine1, setAddressLine1] = useState('');
-  const [addressLine2, setAddressLine2] = useState('');
-  const [city, setCity] = useState('');
   const { login } = useAuth();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
-    // Validación de contraseñas
-    if (password !== confirmPassword) {
-      alert('Las contraseñas no coinciden');
-      return;
-    }
-
-    // Validación de campos vacíos
-    if (!username || !email || !password || !confirmPassword || !firstName || !lastName) {
-      alert('Por favor completa todos los campos');
-      return;
-    }
-
+  const onSubmit = async (data) => {
     try {
       const response = await fetch('http://localhost:3001/api/v1/signup', {
         method: 'POST',
@@ -39,16 +40,16 @@ function Register() {
         },
         body: JSON.stringify({
           user: {
-            handle: username,
-            email: email,
-            password: password,
-            password_confirmation: confirmPassword,
-            last_name: lastName,
-            first_name: firstName,
+            handle: data.username,
+            email: data.email,
+            password: data.password,
+            password_confirmation: data.confirmPassword,
+            last_name: data.lastName,
+            first_name: data.firstName,
             address_attributes: {
-              line1: addressLine1,
-              line2: addressLine2,
-              city: city,
+              line1: data.addressLine1,
+              line2: data.addressLine2,
+              city: data.city,
             },
           },
         }),
@@ -59,13 +60,12 @@ function Register() {
         throw new Error(`Error en el registro: ${errorData.status.message}`);
       }
 
-      const data = await response.json();
-      console.log('Registro exitoso:', data);
+      const responseData = await response.json();
+      console.log('Registro exitoso:', responseData);
 
-      // Verifica que el token esté presente en la respuesta antes de usarlo
-      if (data && data.token) {
+      if (responseData && responseData.token) {
         // Inicia sesión automáticamente después del registro
-        login(data.token);
+        login(responseData.token);
 
         // Redirige a la página principal después del registro
         navigate('/');
@@ -82,16 +82,16 @@ function Register() {
     <div className="register-container">
       <h1 className="title">Pleasure to meet you!</h1>
       <h1 className="title">Tell me about yourself</h1>
-      <form onSubmit={handleSubmit} className="register-form">
+      <form onSubmit={handleSubmit(onSubmit)} className="register-form">
         <div>
           <label htmlFor="first_name">First Name</label>
           <input
             type="text"
             id="first_name"
             placeholder="Enter your Name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            {...register('firstName')}
           />
+          <p>{errors.firstName?.message}</p>
         </div>
         <div>
           <label htmlFor="last_name">Last Name</label>
@@ -99,9 +99,9 @@ function Register() {
             type="text"
             id="last_name"
             placeholder="Enter your last name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            {...register('lastName')}
           />
+          <p>{errors.lastName?.message}</p>
         </div>
         <div>
           <label htmlFor="email">Email</label>
@@ -109,9 +109,9 @@ function Register() {
             type="email"
             id="email"
             placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            {...register('email')}
           />
+          <p>{errors.email?.message}</p>
         </div>
         <div>
           <label htmlFor="handle">Username</label>
@@ -119,9 +119,9 @@ function Register() {
             type="text"
             id="handle"
             placeholder="Enter your Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            {...register('username')}
           />
+          <p>{errors.username?.message}</p>
         </div>
         <div>
           <label htmlFor="password">Password</label>
@@ -129,9 +129,9 @@ function Register() {
             type="password"
             id="password"
             placeholder="Enter your Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            {...register('password')}
           />
+          <p>{errors.password?.message}</p>
         </div>
         <div>
           <label htmlFor="confirm_password">Confirm Password</label>
@@ -139,9 +139,9 @@ function Register() {
             type="password"
             id="confirm_password"
             placeholder="Repeat your Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            {...register('confirmPassword')}
           />
+          <p>{errors.confirmPassword?.message}</p>
         </div>
 
         {/* Address section */}
@@ -151,15 +151,13 @@ function Register() {
             type="text"
             id="address_line1"
             placeholder="Line 1"
-            value={addressLine1}
-            onChange={(e) => setAddressLine1(e.target.value)}
+            {...register('addressLine1')}
           />
           <input
             type="text"
             id="address_line2"
             placeholder="Line 2"
-            value={addressLine2}
-            onChange={(e) => setAddressLine2(e.target.value)}
+            {...register('addressLine2')}
           />
         </div>
         <div>
@@ -167,8 +165,7 @@ function Register() {
             type="text"
             id="city"
             placeholder="City"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
+            {...register('city')}
           />
         </div>
         <button type="submit">Sign Up</button>
