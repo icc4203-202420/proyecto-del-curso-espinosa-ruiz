@@ -15,7 +15,6 @@ function BarList() {
       return;
     }
 
-    console.log('Using token:', token); // Verifica si el token está siendo obtenido correctamente
 
     fetch('http://localhost:3001/api/v1/bars', {
       headers: {
@@ -91,4 +90,3 @@ function BarList() {
 }
 
 export default BarList;
-    
