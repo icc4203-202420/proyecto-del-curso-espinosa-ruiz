@@ -15,13 +15,18 @@ class API::V1::SessionsController < Devise::SessionsController
   end
   def respond_to_on_destroy
     if request.headers['Authorization'].present?
-      jwt_payload = JWT.decode(
-        request.headers['Authorization'].split(' ').last,
-        Rails.application.credentials.devise_jwt_secret_key,
-        true,
-        { algorithm: 'HS256' }
-      ).first
-      current_user = User.find(jwt_payload['sub'])
+      token = request.headers['Authorization'].split(' ').last
+      puts "Decoding token: #{token}" # Log the token for debugging
+      jwt_secret_key = Rails.application.credentials.devise_jwt_secret_key
+  
+      begin
+        decoded_token = JWT.decode(token, jwt_secret_key, true, { algorithm: 'HS256' })
+      rescue JWT::DecodeError => e
+        Rails.logger.error("JWT Decode Error: #{e.message}")
+        render json: { error: "Token decode error: #{e.message}" }, status: :unprocessable_entity and return
+      end
+    else
+      render json: { error: 'Authorization header missing' }, status: :unauthorized and return
     end
     
     if current_user

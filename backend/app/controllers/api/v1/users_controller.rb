@@ -1,7 +1,7 @@
 class API::V1::UsersController < ApplicationController
   respond_to :json
   before_action :set_user, only: [:show, :update, :friendships, :create_friendship]
-  before_action :authenticate_user!, only: [:friendships, :create_friendship, :update]  
+  before_action :authenticate_user!, only: [:friendships, :create_friendship, :update, :current]  
   
   def index
     @users = User.includes(:reviews, :address).all   
@@ -32,10 +32,12 @@ class API::V1::UsersController < ApplicationController
   rescue => e
     render json: { error: e.message }, status: :unprocessable_entity
   end
+
+  def current
+    render json: current_user
+  end
   
   
-
-
   # GET /api/v1/users/:id/friendships
   def friendships
     @friends = @user.friends
