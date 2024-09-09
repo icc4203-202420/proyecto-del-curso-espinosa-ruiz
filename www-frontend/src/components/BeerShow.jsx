@@ -5,14 +5,9 @@ import RatingSlider from './RatingSlider.jsx';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-// Validación con Yup: la reseña debe tener más de 15 palabras
 const reviewValidationSchema = Yup.object().shape({
   text: Yup.string()
-    .test(
-      'word-count',
-      'Review must contain at least 15 words',
-      (value) => value && value.trim().split(/\s+/).length >= 15
-    )
+    .min(15, 'Review must contain at least 15 characters')
     .required('Review is required'),
   rating: Yup.number().min(1, 'Rating must be at least 1').max(5, 'Rating cannot be more than 5').required('Rating is required'),
 });
@@ -63,13 +58,23 @@ const BeerShow = () => {
   const beerId = actualUrl.split('/')[4];
   const [currentUser, setCurrentUser] = useState(null);
   const [reviews, setReviews] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/v1/beers/${beerId}/reviews`)
+    fetch('http://localhost:3001/api/v1/users', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+      },
+    })
       .then((response) => response.json())
-      .then((data) => setReviews(data))
-      .catch((error) => console.error('Error fetching reviews:', error));
-  }, [beerId]);
+      .then((data) => setUsers(data))
+      .catch((error) => console.error('Error fetching current user:', error));
+  }, []);
+
+  const usersById = users.reduce((acc, user) => {
+    acc[user.id] = user;
+    return acc;
+  }, {});
 
   useEffect(() => {
     fetch('http://localhost:3001/api/v1/current_user', {
@@ -103,6 +108,20 @@ const BeerShow = () => {
       .then((data) => setBeer(data))
       .catch((error) => console.error('Error fetching beer details:', error));
   }, [beerId]);
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/api/v1/beers/${beerId}/reviews`,
+    {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+      }
+    }
+    )
+    .then(response => response.json())
+    .then(data => setReviews(data))
+    .catch(error => console.error('Error fetching reviews:', error));
+  },[] );
+
 
   const handleNewReview = async (new_review) => {
     console.log('New review added:', new_review);
@@ -202,22 +221,25 @@ const BeerShow = () => {
       {/* Sección completa de reseñas */}
       <div className="reviews-section">
         <h3>Reviews</h3>
-        {reviews && reviews.length > 0 ? (
-          reviews.map((review, index) => (
-            <div key={index} className="review-box">
-              <p>
-                <strong>Reviewer:</strong> {review.user ? review.user.name : 'Anonymous'}
-              </p>
-              <p>
-                <strong>Rating:</strong> {review.rating}/5
-              </p>
-              <p>
-                <strong>Review:</strong> {review.text}
-              </p>
-            </div>
-          ))
-        ) : (
-          <p>No reviews yet.</p>
+        {Array.isArray(reviews.reviews) && (
+          <table className="reviews-table">
+            <thead>
+              <tr>
+                <th>Reviewer</th>
+                <th>Rating</th>
+                <th>Review</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reviews.reviews.map((review, index) => (
+                <tr key={index}>
+                  <td>{usersById[review.user_id] ? `${usersById[review.user_id].first_name} ${usersById[review.user_id].last_name}` : "Anonymous"}</td>
+                  <td>{review.rating}/5</td>
+                  <td>{review.text}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
 
         {/* Mostrar el formulario de reseñas si está abierto */}
