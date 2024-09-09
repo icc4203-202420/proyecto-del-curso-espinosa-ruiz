@@ -1,70 +1,101 @@
+@import './SharedStyles.css';
+
 /* Estilos generales */
 body {
-    background-color: #FFD; 
-    font-family: 'Courier New', Courier, monospace;
-    color: #333; 
-    line-height: 1.6; 
-    padding: 20px; 
-  }
-  
-  /* Estilos para el formulario y sus elementos */
-  form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  form div {
-    margin-bottom: 10px
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 5px; /* Espaciado entre la etiqueta y el campo */
-  }
-  
-  input[type="number"],
-  textarea {
-    width: 100%;
-    padding: 8px; 
-    margin-bottom: 10px; 
-    border: 1px solid #ccc; 
-    border-radius: 4px; 
-  }
-  
-  button[type="submit"] {
-    background-color: #007BFF; 
-    color: #fff; 
-    padding: 10px 15px; 
-    border: none; 
-    border-radius: 4px; 
-    cursor: pointer; 
-  }
-  
-  button[type="submit"]:hover {
-    background-color: #0056b3; 
-  }
-
-  .beer-details {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    background-color: #f0f0f0;
-  }
-  
-  .beer-image {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 20px auto;
-  }
-  
-  .beer-details h2, .beer-details h3 {
-    color: #333;
-  }
-  
-  .beer-details p, .beer-details div {
-    color: #666;
-    margin: 10px 0;
+  background-color: #FFD;
+  font-family: 'Courier New', Courier, monospace;
+  color: #333;
+  line-height: 1.6;
+  padding: 20px;
 }
+
+/* Estilo para el contenedor principal */
+.container {
+  position: relative;
+  width: 100%;
+  padding: 20px; /* Asegura un espacio adecuado alrededor del contenido */
+}
+
+/* Título y nombre de la cerveza */
+.header {
+  text-align: center;
+  margin-bottom: 20px; /* Espaciado entre el encabezado y el resto del contenido */
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.beer-name {
+  font-size: 20px;
+  color: #666;
+  margin-top: 10px;
+}
+
+/* Cuadrado para la imagen */
+.beer-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 356px;
+  height: 329px;
+  padding: 7px 72px 7px 71px;
+  border-radius: 25px;
+  border: 1px solid #000;
+  background: #E5F5E5;
+  margin: 0 auto; /* Centra horizontalmente */
+  margin-bottom: 30px; /* Espaciado inferior */
+}
+
+.beer-image {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+}
+
+.image-placeholder {
+  text-align: center;
+  color: #666;
+}
+
+/* Cuadrado para la información */
+.beer-info-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 362px;
+  height: 257px;
+  padding: 14px 30px;
+  border-radius: 25px;
+  border: 1px solid #000;
+  background: #73B0AB;
+  margin: 0 auto; /* Centra horizontalmente */
+  margin-bottom: 50px; /* Espaciado inferior */
+}
+
+.beer-info-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.beer-info-list li {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+/* Botón de volver */
+button[type="button"] {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+button[type="button"]:hover {
+  background-color: #0056b3;
+}
+  

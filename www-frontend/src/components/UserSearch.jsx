@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './SharedStyles.css'; // Importa el archivo CSS compartido
+import './UserSearch.css'
 import searchIcon from '../assets/search-icon.svg';
 
 function UserSearch() {
