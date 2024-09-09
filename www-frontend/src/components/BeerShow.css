@@ -64,8 +64,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 362px;
-  height: 257px;
+  
   padding: 14px 30px;
   border-radius: 25px;
   border: 1px solid #000;
@@ -113,7 +112,7 @@ button[type="button"]:hover {
   background: #73B0AB;
   margin: 0 auto; /* Centra horizontalmente */
   margin-bottom: 20px; /* Espaciado inferior */
-  
+
 box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
