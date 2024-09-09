@@ -19,7 +19,7 @@ function Navbar() {
     if (token) {
       fetch('http://localhost:3001/api/v1/current_user', {
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
       })
         .then(response => response.json())
@@ -45,6 +45,7 @@ function Navbar() {
         navigate('/login');
       } else {
         console.error('Error en el logout:', await response.json());
+        console.log(localStorage.getItem('jwtToken'));
       }
     } catch (error) {
       console.error('Error al intentar cerrar sesión:', error);
@@ -66,7 +67,7 @@ function Navbar() {
           </div>
           <nav className="navbar">
             <Link to="/" onClick={toggleNavbar}>Home</Link>
-            {isAuthenticated ? (
+            {isAuthenticated? (
               <>
                 <Link to="/user-search" onClick={toggleNavbar}>Search Users</Link>
                 <Link to="/beers" onClick={toggleNavbar}>Beers</Link>

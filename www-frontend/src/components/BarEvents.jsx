@@ -12,7 +12,7 @@ function BarEvents() {
   const barId = actualUrl.split('/')[4];
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken'); // Obtener el token desde localStorage
+    const token = localStorage.getItem('jwtToken'); // Obtener el token desde localStorage
 
     if (!token) {
       console.error('No token found');
@@ -37,7 +37,7 @@ function BarEvents() {
   }, [barId]);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken'); // Obtener el token desde localStorage
+    const token = localStorage.getItem('jwtToken'); // Obtener el token desde localStorage
 
     if (!token) {
       console.error('No token found');

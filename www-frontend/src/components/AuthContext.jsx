@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
 
   // Al cargar la aplicación, verificamos si hay un token en localStorage
   useEffect(() => {
-    const token = localStorage.getItem('authToken'); // Usa la misma clave en toda la app
+    const token = localStorage.getItem('jwtToken'); // Usa la misma clave en toda la app
     if (token) {
       setIsAuthenticated(true); // Si hay token, el usuario está autenticado
     } else {
@@ -21,12 +21,12 @@ export const AuthProvider = ({ children }) => {
   }, []); // Esto se ejecuta solo una vez al cargar el componente
 
   const login = (token) => {
-    localStorage.setItem("authToken", token); // Guarda el token en localStorage
+    localStorage.setItem("jwtToken", token); // Guarda el token en localStorage
     setIsAuthenticated(true);
   };
 
   const logout = () => {
-    localStorage.removeItem("authToken"); // Elimina el token de localStorage
+    localStorage.removeItem("jwtToken"); // Elimina el token de localStorage
     setIsAuthenticated(false);
   };
 

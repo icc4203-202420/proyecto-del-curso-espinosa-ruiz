@@ -36,10 +36,29 @@ const BeerShow = () => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const actualUrl = window.location.href;
   const beerId = actualUrl.split('/')[4];
+  const [currentUser, setCurrentUser] = useState(null);
+  const [ reviews, setReviews ] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    fetch(`http://localhost:3001/api/v1/beers/${beerId}/reviews`)
+    .then(response => response.json())
+    .then(data => setReviews(data))
+    .catch(error => console.error('Error fetching reviews:', error));
+  },[] );
 
+  useEffect(() => {
+    fetch('http://localhost:3001/api/v1/current_user', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}` 
+      }
+    })
+    .then(response => response.json())
+    .then(data => setCurrentUser(data))
+    .catch(error => console.error('Error fetching current user:', error));
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken');
     if (!token) {
       console.error('No token found');
       return;
@@ -60,12 +79,34 @@ const BeerShow = () => {
       .catch((error) => console.error('Error fetching beer details:', error));
   }, [beerId]);
 
-  const handleNewReview = (review) => {
-    console.log('New review added:', review);
-    setBeer({
-      ...beer,
-      reviews: [...beer.reviews, review] // Añadir la nueva reseña a la lista de reseñas existentes
-    });
+  const handleNewReview = async (new_review) => {
+    console.log('New review added:', new_review);
+    try {
+      const response = await fetch(`http://localhost:3001/api/v1/beers/${beerId}/reviews`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+        },
+        body: JSON.stringify({
+          review: {
+            text: new_review.text,
+            rating: new_review.rating,
+            beer_id: beerId,
+            user_id: currentUser.id,
+          },
+        }),
+      });
+  
+      if (response.ok) { 
+        setShowReviewForm(false);
+        window.location.reload();
+      } else {
+        console.error('Error al agregar reseña:', await response.text());
+      }
+    } catch (error) {
+      console.error('Error fetching:', error);
+    }
   };
 
   const toggleReviewForm = () => {
@@ -102,6 +143,7 @@ const BeerShow = () => {
           <li><strong>Alcohol:</strong> {beer.alcohol}</li>
           <li><strong>BLG:</strong> {beer.blg}</li>
           {beer.brand && beer.brand.brewery && <li><strong>Brewery:</strong> {beer.brand.brewery.name}</li>}
+          <li><strong>Average Rating:</strong>{beer.avg_rating}</li>
         </ul>
       </div>
 
@@ -118,7 +160,7 @@ const BeerShow = () => {
       {/* Tabla de reseñas */}
       <div className="reviews-table-container">
         <h3>Reviews</h3>
-        {beer.reviews && beer.reviews.length > 0 ? (
+        {reviews && reviews.length > 0 ? (
           <table className="reviews-table">
             <thead>
               <tr>
