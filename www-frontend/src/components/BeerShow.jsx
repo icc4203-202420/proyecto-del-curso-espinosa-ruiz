@@ -2,40 +2,57 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './BeerShow.css';
 import RatingSlider from './RatingSlider.jsx';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+
+// Validación con Yup: la reseña debe tener más de 15 palabras
+const reviewValidationSchema = Yup.object().shape({
+  text: Yup.string()
+    .test(
+      'word-count',
+      'Review must contain at least 15 words',
+      (value) => value && value.trim().split(/\s+/).length >= 15
+    )
+    .required('Review is required'),
+  rating: Yup.number().min(1, 'Rating must be at least 1').max(5, 'Rating cannot be more than 5').required('Rating is required'),
+});
 
 function ReviewsForm({ beerId, onNewReview, toggleForm }) {
-  const [text, setText] = useState('');
-  const [rating, setRating] = useState(3); // Valor inicial del slider
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('Submitting review:', { beerId, text, rating });
-    onNewReview({ text, rating, beerId });
-    setText('');
-    setRating(3); // Restablecer a valor predeterminado después de enviar
-    toggleForm(); // Ocultar el formulario después de enviar la reseña
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="reviews-form">
-      <div>
-        <textarea
-          id="reviewText"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Write your review"
-        />
-      </div>
+    <Formik
+      initialValues={{ text: '', rating: 3 }}
+      validationSchema={reviewValidationSchema}
+      onSubmit={(values, { resetForm }) => {
+        console.log('Submitting review:', values);
+        onNewReview(values);
+        resetForm(); // Limpiar el formulario
+        toggleForm(); // Cerrar el formulario
+      }}
+    >
+      {({ values, setFieldValue }) => (
+        <Form className="reviews-form">
+          <div>
+            <Field as="textarea" id="reviewText" name="text" placeholder="Write your review" />
+            <ErrorMessage name="text" component="div" className="error-message" />
+          </div>
 
-      {/* Contenedor para el slider con estilo de cuadro */}
-      <div className="rating-container">
-        <label htmlFor="reviewRating">Rating:</label>
-        <RatingSlider rating={rating} setRating={setRating} />
-      </div>
+          {/* Contenedor para el slider con estilo de cuadro */}
+          <div className="rating-container">
+            <label htmlFor="reviewRating">Rating:</label>
+            <RatingSlider
+              rating={values.rating}
+              setRating={(value) => setFieldValue('rating', value)} // Sincronizar con Formik
+            />
+            <ErrorMessage name="rating" component="div" className="error-message" />
+          </div>
 
-      <button type="submit">Submit Review</button>
-      <button type="button" onClick={toggleForm}>Cancel</button>
-    </form>
+          <button type="submit">Submit Review</button>
+          <button type="button" onClick={toggleForm}>
+            Cancel
+          </button>
+        </Form>
+      )}
+    </Formik>
   );
 }
 
@@ -47,7 +64,12 @@ const BeerShow = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [reviews, setReviews] = useState([]);
 
-
+  useEffect(() => {
+    fetch(`http://localhost:3001/api/v1/beers/${beerId}/reviews`)
+      .then((response) => response.json())
+      .then((data) => setReviews(data))
+      .catch((error) => console.error('Error fetching reviews:', error));
+  }, [beerId]);
 
   useEffect(() => {
     fetch('http://localhost:3001/api/v1/current_user', {
@@ -167,7 +189,6 @@ const BeerShow = () => {
           <li>
             <strong>Average Rating:</strong> {beer.avg_rating}
           </li>
-          
         </ul>
       </div>
 
