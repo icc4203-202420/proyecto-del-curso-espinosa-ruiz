@@ -1,30 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './BeerShow.css';
+import RatingSlider from './RatingSlider.jsx';
 
 function ReviewsForm({ beerId, onNewReview, toggleForm }) {
   const [text, setText] = useState('');
-  const [rating, setRating] = useState('');
+  const [rating, setRating] = useState(3); // Valor inicial del slider
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Submitting review:', { beerId, text, rating });
     onNewReview({ text, rating, beerId });
     setText('');
-    setRating('');
+    setRating(3); // Restablecer a valor predeterminado después de enviar
     toggleForm(); // Ocultar el formulario después de enviar la reseña
   };
 
   return (
     <form onSubmit={handleSubmit} className="reviews-form">
       <div>
-        <label htmlFor="reviewText">Review:</label>
-        <textarea id="reviewText" value={text} onChange={(e) => setText(e.target.value)} />
+        <textarea
+          id="reviewText"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Write your review"
+        />
       </div>
-      <div>
+
+      {/* Contenedor para el slider con estilo de cuadro */}
+      <div className="rating-container">
         <label htmlFor="reviewRating">Rating:</label>
-        <input type="number" id="reviewRating" value={rating} onChange={(e) => setRating(e.target.value)} />
+        <RatingSlider rating={rating} setRating={setRating} />
       </div>
+
       <button type="submit">Submit Review</button>
       <button type="button" onClick={toggleForm}>Cancel</button>
     </form>
@@ -37,24 +45,19 @@ const BeerShow = () => {
   const actualUrl = window.location.href;
   const beerId = actualUrl.split('/')[4];
   const [currentUser, setCurrentUser] = useState(null);
-  const [ reviews, setReviews ] = useState([]);
+  const [reviews, setReviews] = useState([]);
 
-  useEffect(() => {
-    fetch(`http://localhost:3001/api/v1/beers/${beerId}/reviews`)
-    .then(response => response.json())
-    .then(data => setReviews(data))
-    .catch(error => console.error('Error fetching reviews:', error));
-  },[] );
+
 
   useEffect(() => {
     fetch('http://localhost:3001/api/v1/current_user', {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}` 
-      }
+        Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+      },
     })
-    .then(response => response.json())
-    .then(data => setCurrentUser(data))
-    .catch(error => console.error('Error fetching current user:', error));
+      .then((response) => response.json())
+      .then((data) => setCurrentUser(data))
+      .catch((error) => console.error('Error fetching current user:', error));
   }, []);
 
   useEffect(() => {
@@ -97,8 +100,8 @@ const BeerShow = () => {
           },
         }),
       });
-  
-      if (response.ok) { 
+
+      if (response.ok) {
         setShowReviewForm(false);
         window.location.reload();
       } else {
@@ -135,52 +138,70 @@ const BeerShow = () => {
       {/* Cuadrado informativo */}
       <div className="beer-info-container">
         <ul className="beer-info-list">
-          <li><strong>Style:</strong> {beer.style}</li>
-          <li><strong>Hop:</strong> {beer.hop}</li>
-          <li><strong>Yeast:</strong> {beer.yeast}</li>
-          <li><strong>Malts:</strong> {beer.malts}</li>
-          <li><strong>IBU:</strong> {beer.ibu}</li>
-          <li><strong>Alcohol:</strong> {beer.alcohol}</li>
-          <li><strong>BLG:</strong> {beer.blg}</li>
-          {beer.brand && beer.brand.brewery && <li><strong>Brewery:</strong> {beer.brand.brewery.name}</li>}
-          <li><strong>Average Rating:</strong>{beer.avg_rating}</li>
+          <li>
+            <strong>Style:</strong> {beer.style}
+          </li>
+          <li>
+            <strong>Hop:</strong> {beer.hop}
+          </li>
+          <li>
+            <strong>Yeast:</strong> {beer.yeast}
+          </li>
+          <li>
+            <strong>Malts:</strong> {beer.malts}
+          </li>
+          <li>
+            <strong>IBU:</strong> {beer.ibu}
+          </li>
+          <li>
+            <strong>Alcohol:</strong> {beer.alcohol}
+          </li>
+          <li>
+            <strong>BLG:</strong> {beer.blg}
+          </li>
+          {beer.brand && beer.brand.brewery && (
+            <li>
+              <strong>Brewery:</strong> {beer.brand.brewery.name}
+            </li>
+          )}
+          <li>
+            <strong>Average Rating:</strong> {beer.avg_rating}
+          </li>
+          
         </ul>
       </div>
 
       {/* Botón para abrir el formulario de reseñas */}
       <div>
         <button type="button" onClick={toggleReviewForm}>
-          {showReviewForm ? "Close Review Form" : "Add a Review"}
+          {showReviewForm ? 'Close Review Form' : 'Add a Review'}
         </button>
       </div>
 
-      {/* Mostrar el formulario de reseñas si está abierto */}
-      {showReviewForm && <ReviewsForm beerId={beerId} onNewReview={handleNewReview} toggleForm={toggleReviewForm} />}
-
-      {/* Tabla de reseñas */}
-      <div className="reviews-table-container">
+      {/* Sección completa de reseñas */}
+      <div className="reviews-section">
         <h3>Reviews</h3>
         {reviews && reviews.length > 0 ? (
-          <table className="reviews-table">
-            <thead>
-              <tr>
-                <th>Reviewer</th>
-                <th>Rating</th>
-                <th>Review</th>
-              </tr>
-            </thead>
-            <tbody>
-              {beer.reviews.map((review, index) => (
-                <tr key={index}>
-                  <td>{review.user ? review.user.name : "Anonymous"}</td>
-                  <td>{review.rating}/5</td>
-                  <td>{review.text}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          reviews.map((review, index) => (
+            <div key={index} className="review-box">
+              <p>
+                <strong>Reviewer:</strong> {review.user ? review.user.name : 'Anonymous'}
+              </p>
+              <p>
+                <strong>Rating:</strong> {review.rating}/5
+              </p>
+              <p>
+                <strong>Review:</strong> {review.text}
+              </p>
+            </div>
+          ))
         ) : (
           <p>No reviews yet.</p>
+        )}
+
+        {/* Mostrar el formulario de reseñas si está abierto */}
+        {showReviewForm && (
+          <ReviewsForm beerId={beerId} onNewReview={handleNewReview} toggleForm={toggleReviewForm} />
         )}
       </div>
 
