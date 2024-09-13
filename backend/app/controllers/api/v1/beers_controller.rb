@@ -62,7 +62,7 @@ end
     end
   end
 
-  # DELETE /beers/:id
+  ## DELETE /beers/:id
   def destroy
     @beer.destroy
     head :no_content
