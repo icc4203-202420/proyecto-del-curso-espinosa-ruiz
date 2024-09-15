@@ -85,8 +85,7 @@ function BarEvents() {
               </div>
             </div>
             <div className="event-actions">
-              <a href="#menu" className="event-link">CARTA</a>
-              <a href="#info" className="event-link">INFO</a>
+              <a href={`http://localhost:3000/events/${event.id}`} className="event-link">INFO</a>
             </div>
             <img src={likeIcon} alt="Like" />
           </li>

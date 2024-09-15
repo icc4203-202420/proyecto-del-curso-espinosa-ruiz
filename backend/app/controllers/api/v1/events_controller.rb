@@ -14,16 +14,22 @@ class API::V1::EventsController < ApplicationController
     end
 
     # `GET /api/v1/events/:id`
+
     def show
-        if @event.image.attached?
-            render json: @event.as_json.merge({
-                image_url: url_for(@event.image),
-                thumbnail_url: url_for(@event.thumbnail)}),
-                status: :ok
-        else
-            render json: { event: @event.as_json }, status: :ok
-        end
+      @event = Event.includes(:attendances).find(params[:id])
+      event_json = @event.as_json(include: [:attendances])
+    
+      if @event.flyer.attached?
+        event_json.merge!({
+          flyer_url: url_for(@event.flyer),
+          thumbnail_url: url_for(@event.thumbnail)
+        })
+      end
+    
+      render json: { event: event_json }, status: :ok
     end
+
+
 
     # `POST /api/v1/events`
     def create
@@ -46,6 +52,17 @@ class API::V1::EventsController < ApplicationController
         else
           render json: @event.errors, status: :unprocessable_entity
         end
+    end
+
+    def mark_assistance
+        @attendance = Attendance.find_by(user_id: current_user.id, event_id: params[:id])
+        if @attendance
+          @attendance.destroy
+          render json: { message: 'Assistance removed' }, status: :ok
+        else
+          Attendance.create(user_id: current_user.id, event_id: params[:id], checked_in: true)
+          render json: { message: 'Assistance marked' }, status: :created
+      end
     end
       
 

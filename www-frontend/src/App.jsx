@@ -10,6 +10,7 @@ import UserSearch from './components/UserSearch';
 import BeerShow from './components/BeerShow';
 import Login from './components/Login';
 import Register from './components/Register';
+import EventsShow from './components/EventsShow';
 import { AuthProvider } from './components/AuthContext';
 
 function App() {
@@ -26,7 +27,9 @@ function App() {
         <Route path="/bars" element={<BarList />} />
         <Route path="/bars/:id/events" element={<BarEvents />} />
         <Route path="/user-search" element={<UserSearch />} />
+        <Route path="/events/:id" element={<EventsShow />} />
         <Route path="*" element={<div><h1>Page Not Found</h1></div>} />
+        
       </Routes>
       </AuthProvider>
     </Router>
