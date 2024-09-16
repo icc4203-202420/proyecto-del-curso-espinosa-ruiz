@@ -7,18 +7,42 @@ class API::V1::BarsController < ApplicationController
   before_action :verify_jwt_token, only: [:create, :update, :destroy]
 
   def index
-    @bars = Bar.all
-    render json: { bars: @bars }, status: :ok
+    @bars = Bar.includes(address: :country).all
+    bars_json = @bars.map do |bar|
+      # Utiliza `as_json` para incluir la dirección y anidar la información del país dentro de la dirección
+      bar_json = bar.as_json(include: { 
+        address: { 
+          include: {
+            country: {
+              only: [:id, :name] # Ajusta esto según los atributos que quieras incluir del país
+            }
+          },
+          except: [:updated_at, :created_at, :country_id] # Excluye campos que no quieras incluir de la dirección
+        }
+      })
+      # Añade URLs de imágenes si están adjuntas
+      if bar.image.attached?
+        bar_json.merge!({
+          image_url: url_for(bar.image),
+          thumbnail_url: url_for(bar.thumbnail)
+        })
+      end
+      bar_json
+    end
+  
+    render json: { bars: bars_json }, status: :ok
   end
 
   def show
+    @bar = Bar.includes(:address).find(params[:id])
+    bar_json = @bar.as_json(include: [:address])
+
     if @bar.image.attached?
-      render json: @bar.as_json.merge({ 
+      render json: bar_json.merge({ 
         image_url: url_for(@bar.image), 
-        thumbnail_url: url_for(@bar.thumbnail) }),
-        status: :ok
+        thumbnail_url: url_for(@bar.thumbnail) })
     else
-      render json: { bar: @bar.as_json }, status: :ok
+      render json: { bar: bar_json}, status: :ok
     end
   end
 
