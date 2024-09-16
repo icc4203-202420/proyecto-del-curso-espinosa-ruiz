@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './EventsShow.css'; // Asegúrate de que los estilos están aquí.
+import './EventsShow.css'; // Asegúrate de que el archivo CSS existe
+import CheckInIcon from '../assets/b. Selected.svg';  // Asegúrate de que esta ruta sea correcta
 
 function EventsShow() {
   const [event, setEvent] = useState(null);
@@ -9,6 +10,7 @@ function EventsShow() {
   const token = localStorage.getItem('jwtToken');
 
   useEffect(() => {
+    // Obtener todos los usuarios
     fetch('http://localhost:3001/api/v1/users', {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -25,6 +27,7 @@ function EventsShow() {
   }, {});
 
   useEffect(() => {
+    // Obtener los detalles del evento
     fetch(`http://localhost:3001/api/v1/events/${eventId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -44,6 +47,7 @@ function EventsShow() {
     return <p>Loading event...</p>;
   }
 
+  // Función para marcar asistencia
   function handleCheckIn() {
     fetch(`http://localhost:3001/api/v1/events/${eventId}/mark_assistance`, {
       method: 'POST',
@@ -57,8 +61,9 @@ function EventsShow() {
         }
         return response.json();
       })
-      .then(() => {
-        window.location.reload();
+      .then((data) => {
+        console.log('Check-in successful', data);
+        window.location.reload(); // Esto recargará la página
       })
       .catch((error) => {
         console.error('Error checking in:', error);
@@ -68,15 +73,15 @@ function EventsShow() {
   return (
     <div className="event-show">
       <h1 className="event-name">{event.name}</h1>
-      <img className="event-image" src="/path/to/event-image.jpg" alt="Event" />
-      <div className="attending-section">
-        <label className="attending-label">
-          <input type="checkbox" checked readOnly />
-          Attending
-        </label>
+
+      {/* Contenedor de la imagen del evento */}
+      <div className="event-image-container">
+        <img className="event-image" src="/path/to/event-image.jpg" alt="Event" />
       </div>
 
+      {/* Lista de asistentes que han hecho check-in */}
       <div className="attendees">
+        <h3>Attendees:</h3>
         {event.attendances
           .filter((attendee) => attendee.checked_in)
           .map((attendee) => (
@@ -86,12 +91,24 @@ function EventsShow() {
                   ? `${usersById[attendee.user_id].first_name} ${usersById[attendee.user_id].last_name}`
                   : 'Unknown'}
               </span>
-              <input type="checkbox" checked className="checkmark" readOnly />
+              <input
+                type="checkbox"
+                checked={true} // Los usuarios que aparecen aquí ya han hecho check-in
+                className="checkmark"
+                readOnly
+              />
             </div>
           ))}
       </div>
+
+      {/* Botón de asistencia */}
+      <div className="attending-section">
+        <button className="attending-button" onClick={handleCheckIn}>
+          <img src={CheckInIcon} alt="Check-in" />
+        </button>
+      </div>
     </div>
-  );
+  );    
 }
 
 export default EventsShow;

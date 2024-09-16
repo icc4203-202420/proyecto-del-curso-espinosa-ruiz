@@ -6,10 +6,12 @@
     padding: 20px;
     background-color: #fffcdc;
     border-radius: 20px;
-    width: 90%;
-    max-width: 400px;
+    width: 100%;
+    max-width: 600px; /* Ajustamos el ancho máximo */
     margin: 0 auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    min-height: 500px; /* Aumentamos el tamaño mínimo para contener todos los elementos */
   }
   
   /* Nombre del evento */
@@ -21,33 +23,47 @@
     text-align: center;
   }
   
-  /* Imagen del evento */
-  .event-image {
-    width: 250px;
-    height: auto;
-    border-radius: 20px;
-    margin-bottom: 20px;
+  /* Contenedor de la imagen del evento */
+  .event-image-container {
+    display: flex;
+    width: 337px;
+    height: 315px;
+    padding: 12px 63px 12px 64px;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Cambiado para que no se salga del contenedor */
+    border-radius: 25px;
+    border: 1px solid #000;
+    background: #e5f5e5;
+    margin-bottom: 20px; /* Añadimos margen inferior para espacio entre imagen y botón */
   }
   
-  /* Sección de asistencia */
+  .event-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Sección del botón de asistencia */
   .attending-section {
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
+    width: 100%;
+    margin-bottom: 20px; /* Espacio debajo del botón */
   }
   
-  .attending-label {
-    font-size: 18px;
-    background-color: #f0f0f0;
-    padding: 5px 10px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
+  /* Botón de asistencia */
+  .attending-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
   }
   
-  .attending-label input[type="checkbox"] {
-    margin-right: 8px;
+  .attending-button img {
+    width: 132px;  /* Asegúrate de que el tamaño sea correcto */
+    height: 32px;
   }
   
   /* Contenedor de asistentes */
@@ -56,8 +72,8 @@
     flex-wrap: wrap;
     justify-content: space-around;
     gap: 10px;
-    margin-top: 20px;
     width: 100%;
+    margin-top: 20px;
   }
   
   /* Cada asistente */
