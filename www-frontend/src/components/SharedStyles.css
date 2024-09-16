@@ -68,3 +68,19 @@
   width: 24px;
   height: 24px;
 }
+
+.map-container {
+  position: relative;
+  margin-top: 20px; /* Asegura un buen espacio entre el buscador y el mapa */
+  display: flex;
+  justify-content: center; /* Centra el mapa en el contenedor */
+}
+.map-wrapper {
+  position: relative;
+  margin-top: 20px; /* Espacio entre la barra de búsqueda y el mapa */
+  display: flex;
+  justify-content: center; /* Asegura que el mapa esté centrado */
+  width: 100%;
+  min-height: 450px; /* Ajusta esto según lo necesites */
+  overflow: visible; /* Permite ver todo el contenido y hacer scroll */
+}

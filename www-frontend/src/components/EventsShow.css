@@ -1,0 +1,104 @@
+/* Contenedor principal del evento */
+.event-show {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #fffcdc;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Nombre del evento */
+  .event-name {
+    font-family: 'Arial', sans-serif;
+    font-size: 24px;
+    color: #000;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  /* Imagen del evento */
+  .event-image {
+    width: 250px;
+    height: auto;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  
+  /* Sección de asistencia */
+  .attending-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .attending-label {
+    font-size: 18px;
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .attending-label input[type="checkbox"] {
+    margin-right: 8px;
+  }
+  
+  /* Contenedor de asistentes */
+  .attendees {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+  /* Cada asistente */
+  .attendee {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 20px;
+    width: 150px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .username {
+    font-size: 14px;
+    color: #000;
+  }
+  
+  /* Checkbox de confirmación de asistencia */
+  .checkmark {
+    background-color: #6633cc;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    appearance: none;
+    display: inline-block;
+    position: relative;
+  }
+  
+  .checkmark:checked {
+    background-color: #6633cc;
+  }
+  
+  .checkmark:checked::after {
+    content: '✔';
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    top: 2px;
+    left: 6px;
+  }
+  
