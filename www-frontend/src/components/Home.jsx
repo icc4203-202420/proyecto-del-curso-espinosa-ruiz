@@ -11,65 +11,67 @@ function Home() {
   const [currentUserLocation, setCurrentUserLocation] = useState({ lat: 0, lng: 0 });
   const [BarSketch, setBarSketch] = useState(null);
   const [Bar_id, setBarId] = useState(null);
-  
-  
 
-
-  useEffect(() => {
-    fetch('http://localhost:3001/api/v1/current_user', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-      }
-    })
-      .then(response => response.json())
-      .then(data => setCurrentUser(data))
-      .catch(error => console.error('Error fetching current user:', error));
-  }, []);
-
-
+  const token = localStorage.getItem('jwtToken');
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/v1/bars', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-      }
-    })
-      .then(response => response.json())
-      .then(data => setBars(data.bars))
-      .catch(error => console.error('Error fetching bars:', error));
-  }, []);
+    if (token) {
+      fetch('http://localhost:3001/api/v1/current_user', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(response => response.json())
+        .then(data => setCurrentUser(data))
+        .catch(error => console.error('Error fetching current user:', error));
+    }
+  }, [token]);
 
+  useEffect(() => {
+    if (token) {
+      fetch('http://localhost:3001/api/v1/bars', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(response => response.json())
+        .then(data => setBars(data.bars))
+        .catch(error => console.error('Error fetching bars:', error));
+    }
+  }, [token]);
 
   const filteredBars = bars.filter(bar =>
-    bar.name.toLowerCase().includes(searchTerm.toLowerCase()) || bar.address.line1.toLowerCase().includes(searchTerm.toLowerCase()) || bar.address.city.toLowerCase().includes(searchTerm.toLowerCase()) || bar.address.country.name.toLowerCase().includes(searchTerm.toLowerCase())
+    bar.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    bar.address.line1.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    bar.address.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    bar.address.country.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  console.log( JSON.stringify(filteredBars)); 
 
   useEffect(() => {
-    if (Bar_id) { // Solo ejecutar GetBar si Bar_id no es null
+    if (Bar_id) {
       const GetBar = (Bar_id) => {
-        console.log("Bar_id:", Bar_id);
         fetch(`http://localhost:3001/api/v1/bars/${Bar_id}`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+            'Authorization': `Bearer ${token}`
           }
         })
           .then(response => response.json())
           .then(data => {
             setBartoShow(data.bar);
-            // Mover la lógica de creación de BarSketch aquí
-            const BarSketch = <div>
-              <h1>Bar: {data.bar.name}</h1>
-              <p>Address: {data.bar.address.line1}</p>
-            </div>;
-            setBarSketch(BarSketch);
+            const sketch = (
+              <div>
+                <h1>Bar: {data.bar.name}</h1>
+                <p>Address: {data.bar.address.line1}, {data.bar.address.city}</p>
+              </div>
+            );
+            setBarSketch(sketch);
           })
-          .catch(error => console.error('Error fetching bars:', error));
+          .catch(error => console.error('Error fetching bar:', error));
       };
 
       GetBar(Bar_id);
     }
-  }, [Bar_id]);
+  }, [Bar_id, token]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -91,7 +93,7 @@ function Home() {
 
   return (
     <div className="container">
-      <h1 className='title'>Welcome to Beer App {currentUser?.handle}</h1>
+      <h1 className='title'>Welcome to Beer App {currentUser ? currentUser.handle : 'Guest'}</h1>
 
       <div className="search-container">
         <form className="search-form">
@@ -102,16 +104,18 @@ function Home() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-         <button type="submit" className="search-button" onClick={(e) => {
-            e.preventDefault(); // Previene la recarga de la página
-            console.log("filteredBars:", filteredBars); // Diagnostica el contenido de filteredBars
-            if (filteredBars.length > 0) {
-              setBarId(filteredBars[0].id);
-              setCurrentUserLocation({ lat: filteredBars[0].latitude, lng: filteredBars[0].longitude });
-            } else {
-              console.error("filteredBars está vacío o undefined");
-            }
-          }}>
+          <button
+            type="submit"
+            className="search-button"
+            onClick={(e) => {
+              e.preventDefault(); // Previene la recarga de la página
+              if (filteredBars.length > 0) {
+                setBarId(filteredBars[0].id);
+                setCurrentUserLocation({ lat: filteredBars[0].latitude, lng: filteredBars[0].longitude });
+              } else {
+                console.error("No bars found");
+              }
+            }}>
             <img src={searchIcon} alt="Search" />
           </button>
         </form>
@@ -123,15 +127,14 @@ function Home() {
           <Map
             center={currentUserLocation}
             defaultZoom={7}
-            defaultCenter={currentUserLocation}
             mapId={'7ef791e0ee46cce9'}
             style={{
               width: '398px',
               height: '392px',
               borderRadius: '100px',
-              background: `url('<path-to-image>') lightgray 50% / cover no-repeat`,
-              overflow: 'hidden', 
-              margin: '0 auto', 
+              background: `url('/path-to-image') lightgray 50% / cover no-repeat`,
+              overflow: 'hidden',
+              margin: '0 auto',
             }}
             zoomControl={true}
             mapTypeControl={true}
@@ -151,8 +154,9 @@ function Home() {
           </Map>
         </APIProvider>
       </div>
+
       <div>
-        {BarSketch}
+        {BarSketch ? BarSketch : <p>Select a bar to see details.</p>}
       </div>
     </div>
   );

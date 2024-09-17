@@ -35,7 +35,7 @@ if Rails.env.development?
   end
 
   # Crear eventos asociados a los bares
-  events = bars.map do |bar|
+  events = bars.map do |bar|  
     FactoryBot.create(:event, bar: bar)
   end
 
