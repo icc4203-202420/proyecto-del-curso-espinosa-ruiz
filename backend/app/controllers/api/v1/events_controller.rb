@@ -12,7 +12,7 @@ class API::V1::EventsController < ApplicationController
       @events = Event.all
       render json: { events: @events }, status: :ok
     end
-
+    
     # `GET /api/v1/events/:id`
 
     def show

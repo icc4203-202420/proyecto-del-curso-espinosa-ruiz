@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import './EventsShow.css'; // Asegúrate de que el archivo CSS existe
+import './EventsShow.css'; // Asegúrate de que el archivo CSS exista
 import CheckInIcon from '../assets/b. Selected.svg';  // Asegúrate de que esta ruta sea correcta
+import AddEvent from '../assets/masevento.svg'; // Botón para crear post
+import { useNavigate } from 'react-router-dom'; // Actualización: usamos useNavigate en lugar de useHistory
 
 function EventsShow() {
   const [event, setEvent] = useState(null);
@@ -8,6 +10,7 @@ function EventsShow() {
   const actualUrl = window.location.href;
   const eventId = actualUrl.split('/')[4];
   const token = localStorage.getItem('jwtToken');
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Obtener todos los usuarios
@@ -70,9 +73,19 @@ function EventsShow() {
       });
   }
 
+  // Función para redirigir al componente de creación de post
+  function handleAddEventPicture() {
+    navigate(`/events/${eventId}/add-picture`); // Redirigir usando useNavigate
+  }
+
   return (
     <div className="event-show">
       <h1 className="event-name">{event.name}</h1>
+
+      {/* Botón para añadir evento (crear post) */}
+      <button className="add-event-button" onClick={handleAddEventPicture}>
+        <img src={AddEvent} alt="Add Event" />
+      </button>
 
       {/* Contenedor de la imagen del evento */}
       <div className="event-image-container">
@@ -107,8 +120,24 @@ function EventsShow() {
           <img src={CheckInIcon} alt="Check-in" />
         </button>
       </div>
+
+      {/* Galería de imágenes */}
+      <div className="event-gallery">
+        <h3>Event Gallery</h3>
+        <div className="gallery-container">
+          {event.images && event.images.length > 0 ? (
+            event.images.map((imageUrl, index) => (
+              <div className="gallery-image" key={index}>
+                <img src={imageUrl} alt={`Event image ${index + 1}`} />
+              </div>
+            ))
+          ) : (
+            <p>No images available for this event.</p>
+          )}
+        </div>
+      </div>
     </div>
-  );    
+  );
 }
 
 export default EventsShow;

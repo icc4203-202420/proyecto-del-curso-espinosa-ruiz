@@ -117,4 +117,40 @@
     top: 2px;
     left: 6px;
   }
+
+  .add-event-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .add-event-button img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* Galería de imágenes */
+.event-gallery {
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.gallery-container {
+  display: flex;
+  flex-direction: column; /* Hace que las imágenes se alineen verticalmente */
+  gap: 20px; /* Espacio entre las imágenes */
+  max-height: 400px; /* Altura máxima con scroll */
+  overflow-y: auto; /* Scroll vertical si hay muchas imágenes */
+}
+
+.gallery-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
   
