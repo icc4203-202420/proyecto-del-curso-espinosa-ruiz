@@ -1,0 +1,156 @@
+/* Contenedor principal del evento */
+.event-show {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #fffcdc;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 600px; /* Ajustamos el ancho máximo */
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    min-height: 500px; /* Aumentamos el tamaño mínimo para contener todos los elementos */
+  }
+  
+  /* Nombre del evento */
+  .event-name {
+    font-family: 'Arial', sans-serif;
+    font-size: 24px;
+    color: #000;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  /* Contenedor de la imagen del evento */
+  .event-image-container {
+    display: flex;
+    width: 337px;
+    height: 315px;
+    padding: 12px 63px 12px 64px;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Cambiado para que no se salga del contenedor */
+    border-radius: 25px;
+    border: 1px solid #000;
+    background: #e5f5e5;
+    margin-bottom: 20px; /* Añadimos margen inferior para espacio entre imagen y botón */
+  }
+  
+  .event-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Sección del botón de asistencia */
+  .attending-section {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px; /* Espacio debajo del botón */
+  }
+  
+  /* Botón de asistencia */
+  .attending-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+  }
+  
+  .attending-button img {
+    width: 132px;  /* Asegúrate de que el tamaño sea correcto */
+    height: 32px;
+  }
+  
+  /* Contenedor de asistentes */
+  .attendees {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 10px;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  /* Cada asistente */
+  .attendee {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 20px;
+    width: 150px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .username {
+    font-size: 14px;
+    color: #000;
+  }
+  
+  /* Checkbox de confirmación de asistencia */
+  .checkmark {
+    background-color: #6633cc;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    appearance: none;
+    display: inline-block;
+    position: relative;
+  }
+  
+  .checkmark:checked {
+    background-color: #6633cc;
+  }
+  
+  .checkmark:checked::after {
+    content: '✔';
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    top: 2px;
+    left: 6px;
+  }
+
+  .add-event-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .add-event-button img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* Galería de imágenes */
+.event-gallery {
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.gallery-container {
+  display: flex;
+  flex-direction: column; /* Hace que las imágenes se alineen verticalmente */
+  gap: 20px; /* Espacio entre las imágenes */
+  max-height: 400px; /* Altura máxima con scroll */
+  overflow-y: auto; /* Scroll vertical si hay muchas imágenes */
+}
+
+.gallery-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+  

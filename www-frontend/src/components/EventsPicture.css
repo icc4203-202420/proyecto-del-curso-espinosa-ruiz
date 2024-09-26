@@ -1,0 +1,143 @@
+/* General container */
+.event-picture-container {
+    background-color: #fcf7e5;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Title */
+  .title {
+    font-size: 32px;
+    font-family: 'Cursive', sans-serif;
+    color: #000;
+    margin-bottom: 20px;
+  }
+  
+  /* Picture space */
+  .picture-space {
+    background-color: #f0f0f0;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    position: relative;
+    border: 2px solid #00a0a0;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .placeholder-text {
+    line-height: 300px;
+    font-size: 24px;
+    color: #666;
+  }
+  
+  .uploaded-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+  }
+  
+  .upload-input {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+  }
+  
+  /* Description input */
+  .description-input {
+    width: 80%;
+    height: 60px;
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 15px;
+    border: 2px solid #00a0a0;
+    font-size: 16px;
+    background-color: #9fcfcf;
+    color: #000;
+    resize: none;
+  }
+  
+  /* Tag users input */
+  .tag-users {
+    width: 100%;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .tag-users-input {
+    width: 80%;
+    padding: 10px;
+    border-radius: 20px;
+    border: 2px solid #00a0a0;
+    font-size: 16px;
+    background-color: #9fcfcf;
+    color: #000;
+  }
+  
+  .user-suggestions {
+    position: absolute;
+    background-color: #fff;
+    width: 80%;
+    list-style-type: none;
+    padding: 0;
+    margin: 5px 0 0;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1;
+  }
+  
+  .user-suggestions li {
+    padding: 10px;
+    cursor: pointer;
+    text-align: left;
+  }
+  
+  .user-suggestions li:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Layout de usuarios etiquetados en un diseño de 2 columnas */
+  .tagged-users {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .tagged-user {
+    width: calc(50% - 10px); /* Ocupa la mitad del espacio por fila, con un gap */
+    background-color: #9fcfcf;
+    padding: 10px;
+    text-align: center;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #000;
+  }
+  
+  /* Share post button */
+  .share-post-button {
+    width: 150px;
+    padding: 10px;
+    margin: 20px 0;
+    border-radius: 20px;
+    background-color: #d1e7e7;
+    border: 2px solid #00a0a0;
+    color: #000;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  

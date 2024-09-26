@@ -35,7 +35,7 @@ if Rails.env.development?
   end
 
   # Crear eventos asociados a los bares
-  events = bars.map do |bar|
+  events = bars.map do |bar|  
     FactoryBot.create(:event, bar: bar)
   end
 
@@ -43,6 +43,14 @@ if Rails.env.development?
   users.combination(2).to_a.sample(5).each do |user_pair|
     FactoryBot.create(:friendship, user: user_pair[0], friend: user_pair[1], bar: bars.sample)
   end
+
+  # Crear bares con direcciones predeterminadas
+  bar1 = FactoryBot.create(:bar, name: "Barbazul las condes", latitude: -33.408432477832065, longitude: -70.55057067362067, address: FactoryBot.create(:address))
+  bar2 = FactoryBot.create(:bar, name: "Bar La Virgen Las Condes", latitude:  -33.403468769034426, longitude: -70.57483548297961, address: FactoryBot.create(:address))
+  bar3 = FactoryBot.create(:bar, name: "Bar Santiago Vitacura", latitude: -33.3860994490438, longitude:  -70.56505806205678, address: FactoryBot.create(:address))
+  bar4 = FactoryBot.create(:bar, name: "Bar Buena Barra", latitude: -33.419678161181764, longitude:  -70.6085334425203, address: FactoryBot.create(:address))
+  bar5 = FactoryBot.create(:bar, name: "Insert Coin Bar - Providencia", latitude: -33.42628276959576, longitude:  -70.61784726228368, address: FactoryBot.create(:address))
+  bar6 = FactoryBot.create(:bar, name: "Gracielo Bar", latitude: -33.42540608058621, longitude:   -70.61994812388444, address: FactoryBot.create(:address))
 
   # Crear attendances (asistencia) de usuarios a eventos
   users.each do |user|

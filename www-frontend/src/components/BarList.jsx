@@ -6,9 +6,10 @@ import searchIcon from '../assets/search-icon.svg';
 function BarList() {
   const [bars, setBars] = useState([]);
   const [search, setSearch] = useState('');
+  const [originalBars, setOriginalBars] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken'); // Obtener el token del localStorage
+    const token = localStorage.getItem('jwtToken'); 
 
     if (!token) {
       console.error('No token found');
@@ -18,20 +19,20 @@ function BarList() {
 
     fetch('http://localhost:3001/api/v1/bars', {
       headers: {
-        'Authorization': `Bearer ${token}`, // Incluir el token en la cabecera
+        'Authorization': `Bearer ${token}`, 
       }
     })
       .then(response => {
-        console.log('Response status:', response.status); // Verifica el estado de la respuesta
+        console.log('Response status:', response.status); 
         if (response.status === 401) {
-          throw new Error('Unauthorized'); // Maneja la falta de autorización
+          throw new Error('Unauthorized'); 
         }
         return response.json();
       })
       .then(data => {
-        console.log('Fetched data:', data); // Verifica los datos devueltos
         if (data && data.bars) {
           setBars(data.bars);
+          setOriginalBars(data.bars);
         } else {
           setBars([]);
         }
@@ -44,7 +45,18 @@ function BarList() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log(`Searching for bar with name: ${search}`);
+
+    if (!search.trim()) {
+      setBars(originalBars);
+      return;
+    }
+
+    const filteredBars = originalBars.filter(bars => bars.name.toLowerCase().includes(search.toLowerCase()));
+    setBars(filteredBars);
+
+    if (filteredBars.length === 0) {
+      console.log('No beers found with that name');
+    }
   };
 
   return (
