@@ -41,7 +41,7 @@ if Rails.env.development?
 
   # Crear relaciones de amistad entre usuarios
   users.combination(2).to_a.sample(5).each do |user_pair|
-    FactoryBot.create(:friendship, user: user_pair[0], friend: user_pair[1], bar: bars.sample)
+    FactoryBot.create(:friendship, user: user_pair[0], friend: user_pair[1], event: events.sample)
   end
 
   # Crear bares con direcciones predeterminadas
