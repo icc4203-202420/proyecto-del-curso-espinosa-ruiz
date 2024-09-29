@@ -64,7 +64,21 @@ class API::V1::EventsController < ApplicationController
           render json: { message: 'Assistance marked' }, status: :created
       end
     end
-      
+
+    def upload_event_image
+        @event = Event.find(params[:id])
+        @user = current_user
+        @event_picture = EventPicture.new(event_id: @event.id, user_id: @user.id, description: params[:description])
+        @event_picture.event_picture.attach(params[:event_picture])
+        @event_picture.save
+        render json: { message: 'Image uploaded successfully' }, status: :created
+    end
+
+    def get_event_images
+        @event = Event.find(params[:id])
+        @event_pictures = EventPicture.where(event_id: @event.id)
+        render json: { event_pictures: @event_pictures }, status: :ok
+    end
 
       private
 

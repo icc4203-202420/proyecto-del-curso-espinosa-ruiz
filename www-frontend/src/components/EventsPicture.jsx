@@ -10,6 +10,7 @@ function EventPicture() {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate(); // Hook para navegar
   const { id: eventId } = useParams(); // Obtener el ID del evento desde los parámetros de la URL
+  const [currentUser, setCurrentUser] = useState(null); 
 
   // Simulando la búsqueda de usuarios desde una API o base de datos
   useEffect(() => {
@@ -18,6 +19,7 @@ function EventPicture() {
       .then((data) => setUsers(data))
       .catch((error) => console.error('Error fetching users:', error));
   }, []);
+
 
   const handleImageChange = (e) => {
     setImage(URL.createObjectURL(e.target.files[0]));
@@ -40,8 +42,24 @@ function EventPicture() {
 
   // Redirigir al evento original al hacer clic en "Share post"
   const handleSubmit = (e) => {
-    e.preventDefault();
-    // Redirigir al evento original
+    fetch(`http://localhost:3001/api/v1/events/${eventId}/upload_event_image`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+      },
+      body: JSON.stringify({
+        image,
+        description,
+        taggedUsers: taggedUsers.map((user) => user.id),
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Event picture uploaded:', data);
+      })
+      .catch((error) => console.error('Error uploading event picture:', error));
+
     navigate(`/events/${eventId}`);
   };
 

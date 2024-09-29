@@ -10,6 +10,7 @@ function EventsShow() {
   const actualUrl = window.location.href;
   const eventId = actualUrl.split('/')[4];
   const token = localStorage.getItem('jwtToken');
+  const [eventImage, setEventImage] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,6 +24,20 @@ function EventsShow() {
       .then((data) => setUsers(data))
       .catch((error) => console.error('Error fetching users:', error));
   }, [token]);
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/api/v1/events/${eventId}/get_event_images`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        method: 'GET',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setEventImage(data))
+      .catch((error) => console.error('Error fetching event images:', error));
+      console.log(JSON.stringify(eventImage));
+  }, [eventId, token]);
+
 
   const usersById = users.reduce((acc, user) => {
     acc[user.id] = user;
@@ -125,8 +140,8 @@ function EventsShow() {
       <div className="event-gallery">
         <h3>Event Gallery</h3>
         <div className="gallery-container">
-          {event.images && event.images.length > 0 ? (
-            event.images.map((imageUrl, index) => (
+          {eventImage && eventImage.length > 0 ? (
+            eventImage.map((imageUrl, index) => (
               <div className="gallery-image" key={index}>
                 <img src={imageUrl} alt={`Event image ${index + 1}`} />
               </div>
