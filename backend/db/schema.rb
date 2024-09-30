@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_08_221641) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_30_015445) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -156,8 +156,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_08_221641) do
     t.integer "friend_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "bar_id", null: false
-    t.index ["bar_id"], name: "index_friendships_on_bar_id"
+    t.integer "event_id"
+    t.index ["event_id"], name: "index_friendships_on_event_id"
     t.index ["friend_id"], name: "index_friendships_on_friend_id"
     t.index ["user_id", "friend_id"], name: "index_friendships_on_user_id_and_friend_id", unique: true
     t.index ["user_id"], name: "index_friendships_on_user_id"
@@ -179,6 +179,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_08_221641) do
     t.datetime "updated_at", null: false
     t.index ["beer_id"], name: "index_reviews_on_beer_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
+  end
+
+  create_table "tagged_users", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "event_picture_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_picture_id"], name: "index_tagged_users_on_event_picture_id"
+    t.index ["user_id"], name: "index_tagged_users_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -214,9 +223,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_08_221641) do
   add_foreign_key "event_pictures", "events"
   add_foreign_key "event_pictures", "users"
   add_foreign_key "events", "bars"
-  add_foreign_key "friendships", "bars"
+  add_foreign_key "friendships", "bars", column: "event_id"
   add_foreign_key "friendships", "users"
   add_foreign_key "friendships", "users", column: "friend_id"
   add_foreign_key "reviews", "beers", on_delete: :cascade
   add_foreign_key "reviews", "users"
+  add_foreign_key "tagged_users", "event_pictures"
+  add_foreign_key "tagged_users", "users"
 end

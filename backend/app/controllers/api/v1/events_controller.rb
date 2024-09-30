@@ -66,18 +66,40 @@ class API::V1::EventsController < ApplicationController
     end
 
     def upload_event_image
-        @event = Event.find(params[:id])
-        @user = current_user
-        @event_picture = EventPicture.new(event_id: @event.id, user_id: @user.id, description: params[:description])
-        @event_picture.event_picture.attach(params[:event_picture])
-        @event_picture.save
-        render json: { message: 'Image uploaded successfully' }, status: :created
+      @event = Event.find(params[:id])
+      @user = current_user
+      @event_picture = EventPicture.new(event_id: @event.id, user_id: @user.id, description: params[:description])
+    
+      if params[:picture].present?
+        @event_picture.event_picture.attach(params[:picture])
+        if @event_picture.save
+          tagged_users_ids = JSON.parse(params[:tagged_users]) rescue []
+          tagged_users_ids.each do |user_id|
+            TaggedUser.create(user_id: user_id, event_picture_id: @event_picture.id)
+          end
+          render json: { message: 'Image uploaded successfully' }, status: :created
+        else
+          render json: {message: 'Error uploading image'}, status: :unprocessable_entity
+        end
+      else
+        render json: { error: 'No image provided' }, status: :unprocessable_entity
+      end
     end
 
     def get_event_images
-        @event = Event.find(params[:id])
-        @event_pictures = EventPicture.where(event_id: @event.id)
-        render json: { event_pictures: @event_pictures }, status: :ok
+      event_pictures = EventPicture.where(event_id: params[:id])
+      images_urls = event_pictures.map do |event_picture|
+        if event_picture.event_picture.attached?
+          {
+            id: event_picture.id,
+            user_id: event_picture.user_id,
+            description: event_picture.description,
+            tagged_users: TaggedUser.where(event_picture_id: event_picture.id).pluck(:user_id),
+            url: url_for(event_picture.event_picture)
+          }
+        end
+      end.compact
+      render json: { event_pictures: images_urls}, status: :ok
     end
 
       private

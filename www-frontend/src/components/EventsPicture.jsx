@@ -11,6 +11,7 @@ function EventPicture() {
   const navigate = useNavigate(); // Hook para navegar
   const { id: eventId } = useParams(); // Obtener el ID del evento desde los parámetros de la URL
   const [currentUser, setCurrentUser] = useState(null); 
+  const formData = new FormData();
 
   // Simulando la búsqueda de usuarios desde una API o base de datos
   useEffect(() => {
@@ -22,11 +23,49 @@ function EventPicture() {
 
 
   const handleImageChange = (e) => {
-    setImage(URL.createObjectURL(e.target.files[0]));
+    const file = e.target.files[0];
+    setImage(URL.createObjectURL(file));
+    console.log(file);
   };
-
+  
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
+  };
+
+  useEffect(() => {
+    // Solicitar acceso a la cámara
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        let video = document.getElementById('video');
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        console.error("Error accessing the camera", err);
+      });
+  }, []);
+  
+  const captureImage = () => {
+    let canvas = document.getElementById('canvas');
+    let context = canvas.getContext('2d');
+    let video = document.getElementById('video');
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Aquí puedes convertir la imagen del canvas a un formato que necesites
+    let imageDataURL = canvas.toDataURL('png');
+    
+    // Por ejemplo, actualizar el estado con la imagen capturada
+    canvas.toBlob(blob => {
+      // Generar un nombre de archivo único
+      const timestamp = new Date().toISOString().replace(/[:\-T.]/g, '');
+      const randomId = Math.random().toString(36).substring(2, 15);
+      const filename = `Captured-${timestamp}-${randomId}.png`;
+  
+      // Crear un objeto File a partir del Blob con el nombre de archivo único
+      const file = new File([blob], filename, { type: "image/png", lastModified: new Date().getTime(), identity: false });
+  
+      setImage(URL.createObjectURL(file));
+      console.log(file);
+    }, 'image/png');
   };
 
   const handleUserSearch = (e) => {
@@ -42,17 +81,19 @@ function EventPicture() {
 
   // Redirigir al evento original al hacer clic en "Share post"
   const handleSubmit = (e) => {
+    e.preventDefault();
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput && fileInput.files[0]) {
+      formData.append('picture', fileInput.files[0]);
+    }
+    formData.append('tagged_users', JSON.stringify(taggedUsers.map((user) => user.id)));
+    formData.append('description', description);
     fetch(`http://localhost:3001/api/v1/events/${eventId}/upload_event_image`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
       },
-      body: JSON.stringify({
-        image,
-        description,
-        taggedUsers: taggedUsers.map((user) => user.id),
-      }),
+      body: formData,
     })
       .then((response) => response.json())
       .then((data) => {
@@ -75,9 +116,14 @@ function EventPicture() {
         {image ? (
           <img src={image} alt="Uploaded" className="uploaded-image" />
         ) : (
-          <div className="placeholder-text">picture space</div>
+          <div>
+          <video id="video" width="300" height="300" autoPlay></video>
+          <button onClick={captureImage}>Capture Image</button>
+          <canvas id="canvas" width="300" height="300" style={{display: 'none'}}></canvas>
+        </div>
         )}
-        <input type="file" onChange={handleImageChange} className="upload-input" />
+            <input type="file" accept="image/*" capture="camera" data-direct-upload-url="<%= rails_direct_uploads_url %>" onChange={handleImageChange} className="upload-input" />
+
       </div>
 
       <textarea

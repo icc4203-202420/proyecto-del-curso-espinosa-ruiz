@@ -1,52 +1,93 @@
-  @import './SharedStyles.css';
+@import './SharedStyles.css';
 
-  .user-search {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 1rem;
-    color: hsl(0, 0%, 0%)
-  }
-  /* Asegúrate de que el formulario no tenga fondo ni borde */
-  .search-form {
-    background-color: transparent; /* Elimina cualquier color de fondo */
-    border: none; /* Elimina cualquier borde */
-    padding: 0; /* Ajusta el padding si es necesario */
-    box-shadow: none; /* Elimina cualquier sombra que pueda causar el efecto de caja */
-  }
+.user-search {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 1rem;
+  color: hsl(0, 0%, 0%);
+}
 
-  .loading{
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-size: 2rem;
-      color: #000;
-  }
+/* Estilo para el Autocomplete completo */
+.autocomplete-container {
+  display: flex;
+  width: 288px;
+  padding: 0px 195px 16px 0px;
+  align-items: center;
+  border-radius: 25px;
+  background-color: #73B0AB; /* Fondo verde para el área completa */
+}
 
-  .user-card {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 1rem;
-    padding: 1rem;
-    border: 1px solid #000;
-    border-radius: 5px;
-    background-color: #f0f0f0;
-  }
+/* Estilo para el input dentro del Autocomplete */
+.MuiAutocomplete-inputRoot {
+  background-color: #E5F5E5; /* Color de fondo del input */
+  border-radius: 25px; /* Bordes redondeados */
+  padding: 9px 35px 9px 9px; /* Ajuste del padding con 35px a la derecha */
+  width: 100%; /* Asegura que el input ocupe todo el espacio */
+}
 
-  .user-info-card {
-      border: 1px solid #000;
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 20px;
-      background-color: #f0f0f0;
-    }
-    
-    .user-info-card h2 {
-      margin-top: 0;
-    }
-    
-    .user-info-card p {
-      margin: 5px 0;
-    }
+/* Ajustes para el dropdown del Autocomplete */
+.MuiAutocomplete-listbox {
+  background-color: #73B0AB; /* Color de fondo del dropdown */
+  border-radius: 0px 0px 25px 25px; /* Bordes redondeados */
+  color: #000; /* Color del texto */
+}
 
-  /* Aquí agregas solo las reglas específicas de BeerList */
+.MuiAutocomplete-option {
+  color: #000; /* Color del texto de las opciones */
+}
+
+/* Ajustar el botón desplegable (flecha) del Autocomplete */
+.MuiAutocomplete-endAdornment {
+  position: absolute; /* Posiciona el botón dentro del contenedor */
+  right: 10px; /* Ajusta el espacio entre el botón y el borde derecho */
+  top: 50%; /* Centra verticalmente el botón */
+  transform: translateY(-50%); /* Ajuste de la posición vertical */
+}
+
+.MuiSvgIcon-root {
+  color: #73B0AB; /* Cambiar el color del icono de la flecha */
+}
+
+/* Elimina el borde y fondo del formulario */
+.search-form {
+  background-color: transparent; /* Elimina cualquier color de fondo */
+  border: none; /* Elimina cualquier borde */
+  padding: 0; /* Ajusta el padding si es necesario */
+  box-shadow: none; /* Elimina cualquier sombra que pueda causar el efecto de caja */
+}
+
+/* Estilos adicionales para los usuarios */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 2rem;
+  color: #000;
+}
+
+.user-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #000;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+}
+
+.user-info-card {
+  border: 1px solid #000;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  background-color: #f0f0f0;
+}
+
+.user-info-card h2 {
+  margin-top: 0;
+}
+
+.user-info-card p {
+  margin: 5px 0;
+}

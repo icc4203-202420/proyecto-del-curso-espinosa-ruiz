@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  # Define tus rutas de Devise
+  # Define las rutas de Devise
   devise_for :users, path: '', path_names: {
     sign_in: 'api/v1/login',
     sign_out: 'api/v1/logout',
@@ -13,31 +13,38 @@ Rails.application.routes.draw do
   # Health check route
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Forzar la redirección de la raíz (root) al login
+  # Redirección de la raíz (root) al login
   root to: redirect('/api/v1/login')
 
-  # Define tus rutas API
+  # Define las rutas API
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       resources :bars
-      get 'current_user', to: 'users#current'
+      get 'current_user', to: 'users#current'  # Ruta para obtener el usuario actual
+      
       resources :beers do
         resources :reviews, only: [:index, :create]
       end
+
       resources :events do
         member do
-          post 'mark_assistance'
+          post 'mark_assistance'  
           post 'upload_event_image'
           get 'get_event_images'
         end
       end
+
+      # Búsqueda de usuarios
+      get 'users/search', to: 'users#search'
+
+      # Rutas para usuarios
       resources :users, only: [:index, :show, :create, :update] do
-        get 'friendships', on: :member
-        post 'friendships', on: :member
+        get 'friendships', on: :member  # Ruta para listar amistades
+        post 'friendships', on: :member, to: 'users#create_friendship'  
         resources :reviews, only: [:index, :create]
       end
+
       resources :reviews, only: [:index, :show, :create, :update, :destroy]
     end
   end
 end
-  

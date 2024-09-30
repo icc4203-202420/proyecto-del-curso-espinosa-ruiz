@@ -33,10 +33,15 @@ function EventsShow() {
       },
     })
       .then((response) => response.json())
-      .then((data) => setEventImage(data))
+      .then(data => {
+        // Actualiza el estado con las URLs de las imágenes
+        const imageUrls = data.event_pictures;
+        setEventImage(imageUrls);
+      })
       .catch((error) => console.error('Error fetching event images:', error));
-      console.log(JSON.stringify(eventImage));
+      
   }, [eventId, token]);
+console.log(JSON.stringify(eventImage));
 
 
   const usersById = users.reduce((acc, user) => {
@@ -90,7 +95,7 @@ function EventsShow() {
 
   // Función para redirigir al componente de creación de post
   function handleAddEventPicture() {
-    navigate(`/events/${eventId}/add-picture`); // Redirigir usando useNavigate
+    navigate(`/events/${eventId}/add-picture`); 
   }
 
   return (
@@ -138,12 +143,23 @@ function EventsShow() {
 
       {/* Galería de imágenes */}
       <div className="event-gallery">
+
         <h3>Event Gallery</h3>
         <div className="gallery-container">
           {eventImage && eventImage.length > 0 ? (
-            eventImage.map((imageUrl, index) => (
+            eventImage.map((url, index) => (
               <div className="gallery-image" key={index}>
-                <img src={imageUrl} alt={`Event image ${index + 1}`} />
+                <h3>Image {index + 1}</h3>
+                <h4>Posted by {usersById[url.user_id].first_name} {usersById[url.user_id].last_name}</h4>
+                <img key={index} src={url.url} alt={`Event Picture ${index + 1}`} />
+                <p>{url.description}</p>
+                <p>Tagged users: </p>
+                {(url.tagged_users || []).map((taggedUser) => (
+                  <span key={taggedUser.id} className="tagged-user">
+                    {usersById[taggedUser].first_name} {usersById[taggedUser].last_name}
+                  </span>
+                
+                ))}
               </div>
             ))
           ) : (

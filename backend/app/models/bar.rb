@@ -1,7 +1,6 @@
 class Bar < ApplicationRecord
   belongs_to :address
   has_many :events
-  has_many :friendships
 
   has_many :bars_beers
   has_many :beers, through: :bars_beers
