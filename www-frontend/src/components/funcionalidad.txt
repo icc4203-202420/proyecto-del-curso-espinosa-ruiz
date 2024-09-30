@@ -1,0 +1,2 @@
+No logramos hacer que el usuario pueda subir una foto de la camara, pero si de la galeria, con lo que en vez de apretar capture image, para subir una se 
+tiene que apretar sobre el espacio en el que se muestra a un usuario y ahí va  atener la opcion de cargar un archivo.
