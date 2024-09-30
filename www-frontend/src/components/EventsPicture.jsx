@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './EventsPicture.css'; // Importa el archivo CSS
-import { useNavigate, useParams } from 'react-router-dom'; // Importamos useNavigate y useParams para manejar la navegación y obtener el ID del evento
+import './EventsPicture.css';
+import { useNavigate, useParams } from 'react-router-dom'; 
 
 function EventPicture() {
   const [image, setImage] = useState(null);
@@ -8,14 +8,13 @@ function EventPicture() {
   const [taggedUsers, setTaggedUsers] = useState([]);
   const [userSearch, setUserSearch] = useState('');
   const [users, setUsers] = useState([]);
-  const navigate = useNavigate(); // Hook para navegar
-  const { id: eventId } = useParams(); // Obtener el ID del evento desde los parámetros de la URL
+  const navigate = useNavigate();
+  const { id: eventId } = useParams();
   const [currentUser, setCurrentUser] = useState(null); 
   const formData = new FormData();
 
-  // Simulando la búsqueda de usuarios desde una API o base de datos
   useEffect(() => {
-    fetch('http://localhost:3001/api/v1/users') // Ajusta esta URL a tu API de usuarios
+    fetch('http://localhost:3001/api/v1/users') 
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error('Error fetching users:', error));
@@ -33,7 +32,6 @@ function EventPicture() {
   };
 
   useEffect(() => {
-    // Solicitar acceso a la cámara
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
         let video = document.getElementById('video');
@@ -50,17 +48,15 @@ function EventPicture() {
     let video = document.getElementById('video');
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-    // Aquí puedes convertir la imagen del canvas a un formato que necesites
     let imageDataURL = canvas.toDataURL('png');
-    
-    // Por ejemplo, actualizar el estado con la imagen capturada
+
     canvas.toBlob(blob => {
-      // Generar un nombre de archivo único
+    
       const timestamp = new Date().toISOString().replace(/[:\-T.]/g, '');
       const randomId = Math.random().toString(36).substring(2, 15);
       const filename = `Captured-${timestamp}-${randomId}.png`;
   
-      // Crear un objeto File a partir del Blob con el nombre de archivo único
+    
       const file = new File([blob], filename, { type: "image/png", lastModified: new Date().getTime(), identity: false });
   
       setImage(URL.createObjectURL(file));
@@ -76,10 +72,10 @@ function EventPicture() {
     if (!taggedUsers.includes(user)) {
       setTaggedUsers([...taggedUsers, user]);
     }
-    setUserSearch(''); // Limpia el campo de búsqueda
+    setUserSearch('');
   };
 
-  // Redirigir al evento original al hacer clic en "Share post"
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const fileInput = document.querySelector('input[type="file"]');
@@ -103,8 +99,6 @@ function EventPicture() {
 
     navigate(`/events/${eventId}`);
   };
-
-  // Filtrar usuarios por lo que el usuario está escribiendo en el campo de búsqueda
   const filteredUsers = users.filter((user) =>
     user.handle.toLowerCase().includes(userSearch.toLowerCase())
   );
@@ -133,7 +127,6 @@ function EventPicture() {
         onChange={handleDescriptionChange}
       />
 
-      {/* Campo de búsqueda para etiquetar usuarios */}
       <div className="tag-users">
         <input
           type="text"
@@ -143,7 +136,6 @@ function EventPicture() {
           onChange={handleUserSearch}
         />
 
-        {/* Mostrar sugerencias solo si hay algo en el campo de búsqueda y hay coincidencias */}
         {userSearch && filteredUsers.length > 0 && (
           <ul className="user-suggestions">
             {filteredUsers.map((user) => (
@@ -155,7 +147,6 @@ function EventPicture() {
         )}
       </div>
 
-      {/* Muestra los usuarios etiquetados */}
       <div className="tagged-users">
         {taggedUsers.map((user, index) => (
           <span key={index} className="tagged-user">
