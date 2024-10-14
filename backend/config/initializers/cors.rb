@@ -14,13 +14,14 @@
 #       methods: [:get, :post, :put, :patch, :delete, :options, :head]
 #   end
 #end
+# config/initializers/cors.rb
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins '*' # later change to the domain of the frontend app
+    origins '*'  # Puedes restringir esto si prefieres solo permitir ciertos dominios o IPs
     resource '*',
-             headers: :any,
-             methods: %i[get post put patch delete options head],
-             expose: [:Authorization]
+      headers: :any,
+      methods: [:get, :post, :put, :patch, :delete, :options, :head],
+      credentials: false  # Cambia a true si necesitas manejar cookies/sesiones
   end
 end

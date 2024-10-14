@@ -61,7 +61,7 @@ function Register() {
       }
 
       const responseData = await response.json();
-      console.log('Registro exitoso:', responseData);
+      // console.log('Registro exitoso:', responseData);
 
       if (responseData && responseData.token) {
         // Inicia sesión automáticamente después del registro
@@ -169,6 +169,7 @@ function Register() {
           />
         </div>
         <button type="submit">Sign Up</button>
+        {/*<Link to="/login">Have an account already? Login</Link>*/}
       </form>
     </div>
   );
