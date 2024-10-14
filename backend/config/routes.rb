@@ -29,6 +29,8 @@ Rails.application.routes.draw do
       resources :events do
         member do
           post 'mark_assistance'  
+          post 'upload_event_image'
+          get 'get_event_images'
         end
       end
 

@@ -10,6 +10,7 @@ function EventsShow() {
   const actualUrl = window.location.href;
   const eventId = actualUrl.split('/')[4];
   const token = localStorage.getItem('jwtToken');
+  const [eventImage, setEventImage] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,6 +24,25 @@ function EventsShow() {
       .then((data) => setUsers(data))
       .catch((error) => console.error('Error fetching users:', error));
   }, [token]);
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/api/v1/events/${eventId}/get_event_images`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        method: 'GET',
+      },
+    })
+      .then((response) => response.json())
+      .then(data => {
+        // Actualiza el estado con las URLs de las imágenes
+        const imageUrls = data.event_pictures;
+        setEventImage(imageUrls);
+      })
+      .catch((error) => console.error('Error fetching event images:', error));
+      
+  }, [eventId, token]);
+console.log(JSON.stringify(eventImage));
+
 
   const usersById = users.reduce((acc, user) => {
     acc[user.id] = user;
@@ -75,7 +95,7 @@ function EventsShow() {
 
   // Función para redirigir al componente de creación de post
   function handleAddEventPicture() {
-    navigate(`/events/${eventId}/add-picture`); // Redirigir usando useNavigate
+    navigate(`/events/${eventId}/add-picture`); 
   }
 
   return (
@@ -123,12 +143,23 @@ function EventsShow() {
 
       {/* Galería de imágenes */}
       <div className="event-gallery">
+
         <h3>Event Gallery</h3>
         <div className="gallery-container">
-          {event.images && event.images.length > 0 ? (
-            event.images.map((imageUrl, index) => (
+          {eventImage && eventImage.length > 0 ? (
+            eventImage.map((url, index) => (
               <div className="gallery-image" key={index}>
-                <img src={imageUrl} alt={`Event image ${index + 1}`} />
+                <h3>Image {index + 1}</h3>
+                <h4>Posted by {usersById[url.user_id].first_name} {usersById[url.user_id].last_name}</h4>
+                <img key={index} src={url.url} alt={`Event Picture ${index + 1}`} />
+                <p>{url.description}</p>
+                <p>Tagged users: </p>
+                {(url.tagged_users || []).map((taggedUser) => (
+                  <span key={taggedUser.id} className="tagged-user">
+                    {usersById[taggedUser].first_name} {usersById[taggedUser].last_name}
+                  </span>
+                
+                ))}
               </div>
             ))
           ) : (
