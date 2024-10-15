@@ -47,7 +47,7 @@ const BeerShow = () => {
         const token = await AsyncStorage.getItem('jwtToken');
         if (!token) throw new Error('No token found');
 
-        const response = await fetch(`http://<ip-computadora>:3001/api/v1/beers/${beerId}`, {
+        const response = await fetch(`http://192.168.100.15:3001/api/v1/beers/${beerId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -68,7 +68,7 @@ const BeerShow = () => {
       dispatch({ type: 'LOADING' });
       try {
         const token = await AsyncStorage.getItem('jwtToken');
-        const response = await fetch(`http://<ip-computadora>:3001/api/v1/beers/${beerId}/reviews`, {
+        const response = await fetch(`http://192.168.100.15:3001/api/v1/beers/${beerId}/reviews`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -106,7 +106,7 @@ const BeerShow = () => {
 
     try {
       const token = await AsyncStorage.getItem('jwtToken');
-      const response = await fetch(`http://<ip-computadora>:3001/api/v1/beers/${beerId}/reviews`, {
+      const response = await fetch(`http://192.168.100.15:3001/api/v1/beers/${beerId}/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

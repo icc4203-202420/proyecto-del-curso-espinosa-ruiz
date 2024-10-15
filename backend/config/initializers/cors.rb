@@ -18,7 +18,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins '*'  # Puedes restringir esto si prefieres solo permitir ciertos dominios o IPs
+    origins '*'  
     resource '*',
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head],

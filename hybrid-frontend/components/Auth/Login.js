@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Para la navegación
 import { useAuth } from './AuthContext'; // Suponiendo que tu contexto de autenticación sigue igual
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://192.168.56.1:3000/api/v1/login', {
+      const response = await fetch('http://192.168.100.15:3001/api/v1/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,7 +31,7 @@ const Login = () => {
   
       const data = await response.json();
       console.log('Inicio de sesión exitoso. Datos de respuesta:', data);
-  
+      await AsyncStorage.setItem('jwtToken', data.status.token);
       const token = data.status.token;
       if (token) {
         // Puedes usar AsyncStorage en lugar de localStorage para persistencia en React Native

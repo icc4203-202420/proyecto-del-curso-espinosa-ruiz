@@ -20,7 +20,7 @@ export default function BeerList() {
           return;
         }
 
-        const response = await fetch('http://192.168.56.1:3000/api/v1/beers', {
+        const response = await fetch('http://192.168.100.15:3001/api/v1/beers', {
           headers: {
             'Authorization': `Bearer ${token}`, // Incluir el token en las cabeceras
           },
