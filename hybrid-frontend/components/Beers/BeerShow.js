@@ -38,9 +38,31 @@ const BeerShow = () => {
   const [rating, setRating] = useState(3);  // Estado del slider
   const [reviewText, setReviewText] = useState('');  // Estado del texto de la reseña
   const [showReviewForm, setShowReviewForm] = useState(false);
-
+  const [currentUser, setCurrentUser] = useState(null);
   const [state, dispatch] = useReducer(reviewsReducer, initialState);
 
+  // Obtener el usuario actual
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const token = await AsyncStorage.getItem('jwtToken');
+        if (!token) throw new Error('No token found');
+
+        const response = await fetch('http://192.168.100.15:3001/api/v1/current_user', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setCurrentUser(data);
+      } catch (error) {
+        console.error('Error fetching current user:', error);
+      }
+    };
+    fetchCurrentUser();
+    console.log(currentUser);
+    }, []);
+  
   useEffect(() => {
     const fetchBeerDetails = async () => {
       try {
@@ -60,6 +82,7 @@ const BeerShow = () => {
     };
 
     fetchBeerDetails();
+
   }, [beerId]);
 
   // Manejar las reseñas usando useReducer
@@ -74,10 +97,11 @@ const BeerShow = () => {
           },
         });
         const data = await response.json();
-
+        
         const userReview = data.reviews.find(review => review.user_id === currentUser.id);
         const otherReviews = data.reviews.filter(review => review.user_id !== currentUser.id);
-
+        console.log(userReview);
+        console.log(otherReviews);
         dispatch({
           type: 'SUCCESS',
           payload: {
