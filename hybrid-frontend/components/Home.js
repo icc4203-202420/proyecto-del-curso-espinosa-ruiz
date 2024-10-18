@@ -13,14 +13,6 @@ const Home = ({ navigation }) => {
           <Text style={styles.buttonText}>Go to Beer List</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.inputContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('UserProfile')}
-        >
-          <Text style={styles.buttonText}>Go to User Profile</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
