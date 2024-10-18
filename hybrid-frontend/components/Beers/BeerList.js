@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Para manejar el token en lugar de localStorage
+import config from '../../config'; 
 
 export default function BeerList() {
   const [search, setSearch] = useState('');
@@ -20,7 +21,7 @@ export default function BeerList() {
           return;
         }
 
-        const response = await fetch('http://192.168.100.15:3001/api/v1/beers', {
+        const response = await fetch(`${config.BaseIP}/api/v1/beers`, {
           headers: {
             'Authorization': `Bearer ${token}`, // Incluir el token en las cabeceras
           },
@@ -103,27 +104,34 @@ export default function BeerList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#FFFFDD', // Color de fondo del contenedor principal
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
     textAlign: 'center',
+    marginBottom: 20,
+    fontFamily: 'Comic Sans MS', // Fuente personalizada, aunque en React Native debes asegurarte de tenerla disponible
   },
   searchContainer: {
     flexDirection: 'row',
     marginBottom: 16,
+    width: '100%',
   },
   searchInput: {
     flex: 1,
-    height: 40,
+    height: 50,
+    padding: 15,
     borderColor: 'gray',
     borderWidth: 1,
+    borderRadius: 30,
+    backgroundColor: '#73B0AB',
+    color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
     marginRight: 8,
-    paddingHorizontal: 8,
-    borderRadius: 4,
   },
   beerItem: {
     marginBottom: 16,
@@ -143,22 +151,39 @@ const styles = StyleSheet.create({
   beerImage: {
     width: 50,
     height: 50,
-    borderRadius: 8,
+    borderRadius: 25,
     marginRight: 16,
   },
-  beerInfo: {
+  beerDetails: {
     flex: 1,
   },
   beerName: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 4,
   },
-  beerManufacturer: {
+  beerDescription: {
     fontSize: 14,
     color: 'gray',
   },
-  beerDescription: {
-    fontSize: 12,
-    color: 'gray',
+  button: {
+    paddingVertical: 15,
+    backgroundColor: '#ff0077',
+    borderRadius: 30,
+    width: '80%',
+    alignSelf: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  link: {
+    marginTop: 20,
+    color: '#ff0077',
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
+

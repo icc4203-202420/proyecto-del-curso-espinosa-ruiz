@@ -52,7 +52,7 @@ const BeerShow = () => {
         const token = await AsyncStorage.getItem('jwtToken');
         if (!token) throw new Error('No token found');
 
-        const response = await fetch('http://192.168.100.15:3001/api/v1/users', {
+        const response = await fetch(`${config.BaseIP}/users`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -83,7 +83,7 @@ if (users !== null) {
         const token = await AsyncStorage.getItem('jwtToken');
         if (!token) throw new Error('No token found');
 
-        const response = await fetch('http://192.168.100.15:3001/api/v1/current_user', {
+        const response = await fetch(`${config.BaseIP}/current_user`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -107,7 +107,7 @@ if (users !== null) {
         const token = await AsyncStorage.getItem('jwtToken');
         if (!token) throw new Error('No token found');
 
-        const response = await fetch(`http://192.168.100.15:3001/api/v1/beers/${beerId}`, {
+        const response = await fetch(`${config.BaseIP}/beers/${beerId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -129,7 +129,7 @@ if (users !== null) {
       dispatch({ type: 'LOADING' });
       try {
         const token = await AsyncStorage.getItem('jwtToken');
-        const response = await fetch(`http://192.168.100.15:3001/api/v1/beers/${beerId}/reviews`, {
+        const response = await fetch(`${config.BaseIP}/beers/${beerId}/reviews`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -165,7 +165,7 @@ if (users !== null) {
 
     try {
       const token = await AsyncStorage.getItem('jwtToken');
-      const response = await fetch(`http://192.168.100.15:3001/api/v1/beers/${beerId}/reviews`, {
+      const response = await fetch(`${config.BaseIP}/beers/${beerId}/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -199,10 +199,12 @@ if (users !== null) {
   return (
     <View style={styles.container}>
       {/* Detalles de la cerveza */}
-      <View style={styles.header}>
-        <Text style={styles.title}>{beer.name}</Text>
-        <Text style={styles.subtitle}>Brewery: {beer.brand?.brewery?.name}</Text>
-        <Text style={styles.subtitle}>Average Rating: {beer.avg_rating}/5</Text>
+      <View style={styles.headerContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>{beer.name}</Text>
+          <Text style={styles.subtitle}>Brewery: {beer.brand?.brewery?.name}</Text>
+          <Text style={styles.subtitle}>Average Rating: {beer.avg_rating}/5</Text>
+        </View>
       </View>
 
       {/* Formulario de reseñas */}
@@ -233,62 +235,105 @@ if (users !== null) {
       <Button title={showReviewForm ? 'Close Review Form' : 'Add a Review'} onPress={() => setShowReviewForm(!showReviewForm)} />
 
       {/* Lista de reseñas */}
-      <FlatList
-        data={userReview}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.reviewItem}>
-            <Text style={styles.reviewerName}>{getReviewerName(item.user_id)}</Text>
-            <Text>Rating: {item.rating}/5</Text>
-            <Text>{item.text}</Text>
-          </View>
-        )}
-        ListHeaderComponent={() => <Text style={styles.reviewHeader}>Reviews</Text>}
-      />
+      <View style={styles.reviewsContainer}>
+        <FlatList
+          data={userReview}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.reviewItem}>
+              <Text style={styles.reviewerName}>{getReviewerName(item.user_id)}</Text>
+              <Text>Rating: {item.rating}/5</Text>
+              <Text>{item.text}</Text>
+            </View>
+          )}
+          ListHeaderComponent={() => <Text style={styles.reviewHeader}>Reviews</Text>}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
-  },
-  header: {
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  form: {
-    marginBottom: 16,
-  },
-  textArea: {
-    height: 100,
-    borderColor: 'gray',
-    borderWidth: 1,
-    padding: 10,
-    marginBottom: 16,
-  },
-  reviewItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'lightgray',
-    paddingVertical: 12,
-  },
-  reviewerName: {
-    fontWeight: 'bold',
-  },
-  reviewHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-});
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      padding: 20,
+      backgroundColor: '#FFFFDD', // Color de fondo del contenedor principal
+    },
+    headerContainer: {
+      marginBottom: 16,
+    },
+    header: {
+      marginBottom: 16,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: 20,
+      fontFamily: 'Comic Sans MS', // Fuente personalizada, aunque en React Native debes asegurarte de tenerla disponible
+    },
+    subtitle: {
+      fontSize: 16,
+      marginBottom: 8,
+      textAlign: 'center',
+    },
+    form: {
+      marginBottom: 16,
+    },
+    textArea: {
+      height: 100,
+      padding: 15,
+      borderColor: 'gray',
+      borderWidth: 1,
+      borderRadius: 30,
+      backgroundColor: '#73B0AB',
+      color: '#fff',
+      fontSize: 16,
+      textAlign: 'center',
+      marginBottom: 15,
+    },
+    reviewsContainer: {
+      flex: 1,
+      marginTop: 20,
+    },
+    reviewItem: {
+      borderBottomWidth: 1,
+      borderBottomColor: 'lightgray',
+      paddingVertical: 12,
+      marginBottom: 10,
+      padding: 10,
+      backgroundColor: '#f0f0f0',
+      borderRadius: 5,
+    },
+    reviewerName: {
+      fontWeight: 'bold',
+    },
+    reviewHeader: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 8,
+      textAlign: 'center',
+    },
+    button: {
+      paddingVertical: 15,
+      backgroundColor: '#ff0077',
+      borderRadius: 30,
+      width: '80%',
+      alignSelf: 'center',
+      marginTop: 20,
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: 18,
+      textAlign: 'center',
+    },
+    link: {
+      marginTop: 20,
+      color: '#ff0077',
+      fontSize: 14,
+      textAlign: 'center',
+    },
+  });
 
 export default BeerShow;

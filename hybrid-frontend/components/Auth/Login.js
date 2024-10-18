@@ -12,7 +12,7 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://192.168.100.15:3001/api/v1/login', {
+      const response = await fetch(`${config.BaseIP}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
