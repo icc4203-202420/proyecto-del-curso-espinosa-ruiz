@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Para manejar el token en lugar de localStorage
+import * as SecureStore from 'expo-secure-store';
 
 export default function BeerList() {
   const [search, setSearch] = useState('');
   const [beers, setBeers] = useState([]);
   const [originalBeers, setOriginalBeers] = useState([]);
-  const navigation = useNavigation(); // Para manejar la navegación
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchBeers = async () => {
       try {
-        const token = await AsyncStorage.getItem('jwtToken'); // Obtener el token desde AsyncStorage
+        const token = await SecureStore.getItemAsync('userToken'); // Obtener el token desde SecureStore
 
         if (!token) {
           Alert.alert('No token found', 'Redirecting to login');

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList, ActivityIndicator, Alert, ScrollView } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Slider } from 'react-native-elements';  // Slider para la calificación
-import AsyncStorage from '@react-native-async-storage/async-storage';  // Para manejar el token
+import * as SecureStore from 'expo-secure-store';
 
 const reviewValidationSchema = {
   text: value => value.length >= 15 || 'Review must contain at least 15 characters',
@@ -45,7 +45,7 @@ const BeerShow = () => {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const token = await AsyncStorage.getItem('jwtToken');
+        const token = await SecureStore.getItemAsync('userToken');
         if (!token) throw new Error('No token found');
 
         const response = await fetch('http://192.168.100.15:3001/api/v1/current_user', {
@@ -60,13 +60,13 @@ const BeerShow = () => {
       }
     };
     fetchCurrentUser();
-    console.log(currentUser);
-    }, []);
-  
+  }, []);
+
+  // Obtener detalles de la cerveza
   useEffect(() => {
     const fetchBeerDetails = async () => {
       try {
-        const token = await AsyncStorage.getItem('jwtToken');
+        const token = await SecureStore.getItemAsync('userToken');
         if (!token) throw new Error('No token found');
 
         const response = await fetch(`http://192.168.100.15:3001/api/v1/beers/${beerId}`, {
@@ -82,7 +82,6 @@ const BeerShow = () => {
     };
 
     fetchBeerDetails();
-
   }, [beerId]);
 
   // Manejar las reseñas usando useReducer
@@ -90,7 +89,7 @@ const BeerShow = () => {
     const fetchReviews = async () => {
       dispatch({ type: 'LOADING' });
       try {
-        const token = await AsyncStorage.getItem('jwtToken');
+        const token = await SecureStore.getItemAsync('userToken');
         const response = await fetch(`http://192.168.100.15:3001/api/v1/beers/${beerId}/reviews`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -100,8 +99,6 @@ const BeerShow = () => {
         
         const userReview = data.reviews.find(review => review.user_id === currentUser.id);
         const otherReviews = data.reviews.filter(review => review.user_id !== currentUser.id);
-        console.log(userReview);
-        console.log(otherReviews);
         dispatch({
           type: 'SUCCESS',
           payload: {
@@ -129,7 +126,7 @@ const BeerShow = () => {
     }
 
     try {
-      const token = await AsyncStorage.getItem('jwtToken');
+      const token = await SecureStore.getItemAsync('userToken');
       const response = await fetch(`http://192.168.100.15:3001/api/v1/beers/${beerId}/reviews`, {
         method: 'POST',
         headers: {

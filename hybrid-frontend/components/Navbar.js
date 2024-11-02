@@ -1,14 +1,25 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
 
 const Navbar = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
-      <Icon name="home" size={30} color="#73B0AB" />
-      <Icon name="beer" size={30} color="#73B0AB" />
-      <Icon name="user" size={30} color="#73B0AB" />
-      <Icon name="glass" size={30} color="#73B0AB" />
+      <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <Icon name="home" size={30} color="#73B0AB" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('BeerList')}>
+        <Icon name="beer" size={30} color="#73B0AB" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('UserSearch')}>
+        <Icon name="user" size={30} color="#73B0AB" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('BarList')}>
+        <Icon name="glass" size={30} color="#73B0AB" />
+      </TouchableOpacity>
     </View>
   );
 };

@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from './AuthContext';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import * as SecureStore from 'expo-secure-store';
 
 // Esquema de validación con Yup
 const validationSchema = yup.object().shape({
@@ -54,7 +55,15 @@ function Register() {
       const responseData = await response.json();
 
       if (responseData && responseData.token) {
-        login(responseData.token);
+        const token = responseData.token;
+        
+        // Guarda el token en SecureStore para autenticación persistente
+        await SecureStore.setItemAsync('userToken', token);
+        
+        // Llama a la función login para actualizar el contexto de autenticación
+        login(token);
+        
+        // Navega a la pantalla de inicio
         navigation.navigate('Home');
       } else {
         throw new Error('Token no encontrado en la respuesta');

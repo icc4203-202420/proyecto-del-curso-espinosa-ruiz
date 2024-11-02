@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
+import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Para la navegación
 import { useAuth } from './AuthContext'; // Suponiendo que tu contexto de autenticación sigue igual
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -31,12 +31,17 @@ const Login = () => {
   
       const data = await response.json();
       console.log('Inicio de sesión exitoso. Datos de respuesta:', data);
-      await AsyncStorage.setItem('jwtToken', data.status.token);
       const token = data.status.token;
+
       if (token) {
-        // Puedes usar AsyncStorage en lugar de localStorage para persistencia en React Native
+        // Almacena el token en SecureStore para autenticación persistente
+        await SecureStore.setItemAsync('userToken', token);
+        
+        // Llama a la función login para actualizar el contexto de autenticación
         login(token);
-        navigation.navigate('Home'); // Navega a la pantalla de inicio
+        
+        // Navega a la pantalla de inicio
+        navigation.navigate('Home');
       } else {
         throw new Error('Token no encontrado en la respuesta');
       }
@@ -80,54 +85,53 @@ const Login = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      padding: 20,
-      backgroundColor: '#FFFFDD', // Color de fondo del contenedor principal
-    },
-    title: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginBottom: 20,
-      fontFamily: 'Comic Sans MS', // Fuente personalizada, aunque en React Native debes asegurarte de tenerla disponible
-    },
-    inputContainer: {
-      marginBottom: 15,
-      width: '100%',
-    },
-    input: {
-      height: 50,
-      padding: 15,
-      borderColor: 'gray',
-      borderWidth: 1,
-      borderRadius: 30,
-      backgroundColor: '#73B0AB', 
-      color: '#fff',
-      fontSize: 16,
-      textAlign: 'center',
-    },
-    button: {
-      paddingVertical: 15,
-      backgroundColor: '#ff0077',
-      borderRadius: 30,
-      width: '80%',
-      alignSelf: 'center',
-      marginTop: 20,
-    },
-    buttonText: {
-      color: 'white',
-      fontSize: 18,
-      textAlign: 'center',
-    },
-    link: {
-      marginTop: 20,
-      color: '#ff0077',
-      fontSize: 14,
-      textAlign: 'center',
-    },
-  });
-  
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#FFFFDD',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontFamily: 'Comic Sans MS',
+  },
+  inputContainer: {
+    marginBottom: 15,
+    width: '100%',
+  },
+  input: {
+    height: 50,
+    padding: 15,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 30,
+    backgroundColor: '#73B0AB', 
+    color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  button: {
+    paddingVertical: 15,
+    backgroundColor: '#ff0077',
+    borderRadius: 30,
+    width: '80%',
+    alignSelf: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  link: {
+    marginTop: 20,
+    color: '#ff0077',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+});
 
 export default Login;
