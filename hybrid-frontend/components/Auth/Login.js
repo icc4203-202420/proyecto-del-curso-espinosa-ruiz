@@ -12,7 +12,7 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://192.168.100.15:3001/api/v1/login', {
+      const response = await fetch('http://192.168.100.107:3001/api/v1/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,13 +34,10 @@ const Login = () => {
       const token = data.status.token;
 
       if (token) {
-        // Almacena el token en SecureStore para autenticación persistente
         await SecureStore.setItemAsync('userToken', token);
         
-        // Llama a la función login para actualizar el contexto de autenticación
         login(token);
         
-        // Navega a la pantalla de inicio
         navigation.navigate('Home');
       } else {
         throw new Error('Token no encontrado en la respuesta');

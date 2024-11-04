@@ -18,7 +18,7 @@ export default function BarList({ navigation }) {
           return;
         }
 
-        const response = await fetch('http://localhost:3001/api/v1/bars', {
+        const response = await fetch('http://192.168.100.107:3001/api/v1/bars', {
           headers: {
             'Authorization': `Bearer ${token}`,
           }
@@ -66,7 +66,7 @@ export default function BarList({ navigation }) {
       const token = await SecureStore.getItemAsync('userToken');
       if (!token) throw new Error('No token found');
 
-      const response = await fetch(`http://localhost:3001/api/v1/bars/${bar.id}/checkin`, {
+      const response = await fetch(`http://192.168.100.107:3001/api/v1/bars/${bar.id}/checkin`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -129,7 +129,7 @@ export default function BarList({ navigation }) {
                 <Text style={styles.barName}>{item.name}</Text>
                 <Text style={styles.barLocation}>{item.location || 'Location not available'}</Text>
                 <Text style={styles.barDescription}>{item.description || 'No description available'}</Text>
-                <Button title="View Events" onPress={() => navigation.navigate('EventDetails', { eventId: item.id })} />
+                <Button title="View Events" onPress={() => navigation.navigate('EventsShow', { eventId: item.id })} />
               </View>
             </TouchableOpacity>
           )}

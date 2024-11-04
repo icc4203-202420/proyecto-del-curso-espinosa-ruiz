@@ -16,11 +16,19 @@ const Home = ({ navigation }) => {
       <View style={styles.inputContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('UserProfile')}
+          onPress={() => navigation.navigate('UserSearch')}
         >
           <Text style={styles.buttonText}>Go to User Profile</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.inputContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('BarList')}
+        >
+          <Text style={styles.buttonText}>Go to Bars</Text>
+        </TouchableOpacity>
+        </View>
     </View>
   );
 };

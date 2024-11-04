@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
 
 // Crear el contexto de autenticación
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 // Hook personalizado para usar el contexto de autenticación
 export function useAuth() {

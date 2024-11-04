@@ -13,12 +13,12 @@ import UserSearch from './components/Users/UserSearch';
 import BarList from './components/Bars/BarList';
 import BarEvents from './components/Bars/BarEvents';
 import EventsShow from './components/Events/EventsShow';
-import EventPicture from './components/Events/EventPicture'; // Añadido aquí
+import EventPicture from './components/Events/EventsPIcture'; 
 
 const Stack = createStackNavigator();
 
 function AppNavigator() {
-  const { isAuthenticated, isLoading } = useContext(AuthContext);
+  const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -35,7 +35,7 @@ function AppNavigator() {
           <Stack.Screen name="Home" component={Home} options={{ title: 'Home' }} />
           <Stack.Screen name="BeerList" component={BeerList} options={{ title: 'Beer List' }} />
           <Stack.Screen name="BeerDetails" component={BeerShow} options={{ title: 'Beer Details' }} />
-          <Stack.Screen name="UserSearch" component={UserSearch} options={{ title: 'User Search' }} />
+          <Stack.Screen name="UserSearch" component={UserSearch} options={{ title: 'UserProfile' }} />
           <Stack.Screen name="BarList" component={BarList} options={{ title: 'Bars' }} />
           <Stack.Screen name="BarEvents" component={BarEvents} options={{ title: 'Bar Events' }} />
           <Stack.Screen name="EventsShow" component={EventsShow} options={{ title: 'Event Details' }} />

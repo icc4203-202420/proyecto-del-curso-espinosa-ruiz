@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import * as Notifications from 'expo-notifications';
-import { AuthContext } from './AuthContext';
+import { AuthContext, useAuth } from '../Auth/AuthContext';
 
 function UserSearch() {
-  const { userToken, logout } = useContext(AuthContext);
+  const { userToken, logout } = useAuth();
   const [search, setSearch] = useState('');
   const [eventSearch, setEventSearch] = useState('');
   const [users, setUsers] = useState([]);
@@ -26,8 +26,9 @@ function UserSearch() {
       try {
         const token = await SecureStore.getItemAsync('userToken');
         if (!token) throw new Error('No token found');
+        console.log(token);
 
-        const response = await fetch('http://localhost:3001/api/v1/current_user', {
+        const response = await fetch('http://192.168.100.107:3001/api/v1/current_user', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -38,7 +39,6 @@ function UserSearch() {
       } catch (error) {
         console.error('Error fetching current user:', error);
         Alert.alert('Error', 'Session expired, please login again');
-        logout();
       }
     };
     fetchCurrentUser();
@@ -49,7 +49,7 @@ function UserSearch() {
       const token = await SecureStore.getItemAsync('userToken');
       if (!token) throw new Error('No token found');
 
-      const response = await fetch(`http://localhost:3001/api/v1/users?handle=${search}`, {
+      const response = await fetch(`http://192.168.100.107:3001/api/v1/users?handle=${search}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -67,7 +67,7 @@ function UserSearch() {
     if (selectedUser && currentUser) {
       try {
         const token = await SecureStore.getItemAsync('userToken');
-        const response = await fetch(`http://localhost:3001/api/v1/users/${currentUser.id}/friendships`, {
+        const response = await fetch(`http://192.168.100.107:3001/api/v1/users/${currentUser.id}/friendships`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

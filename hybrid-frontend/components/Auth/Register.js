@@ -25,7 +25,7 @@ function Register() {
 
   const handleSubmit = async (values) => {
     try {
-      const response = await fetch('http://192.168.100.15:3001/api/v1/signup', {
+      const response = await fetch('http://192.168.100.107:3001/api/v1/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

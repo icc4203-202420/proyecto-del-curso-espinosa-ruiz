@@ -23,7 +23,7 @@ export default function EventPicture() {
         return;
       }
 
-      fetch('http://localhost:3001/api/v1/users', {
+      fetch('http://192.168.100.107:3001/api/v1/users', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -78,7 +78,7 @@ export default function EventPicture() {
       });
     }
 
-    fetch(`http://localhost:3001/api/v1/events/${eventId}/upload_event_image`, {
+    fetch(`http://192.168.100.107:3001/api/v1/events/${eventId}/upload_event_image`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,

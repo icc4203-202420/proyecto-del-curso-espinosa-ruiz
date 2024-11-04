@@ -3,8 +3,8 @@ import { View, Text, Image, Button, FlatList, TouchableOpacity, StyleSheet, Aler
 import * as SecureStore from 'expo-secure-store';
 import * as Notifications from 'expo-notifications';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import CheckInIcon from '../assets/check-in-icon.png';  // Cambia esta ruta según tus assets
-import AddEvent from '../assets/add-event.png';
+import CheckInIcon from '../../assets/check-in-icon.svg';  
+import AddEvent from '../../assets/add-event.png';
 
 export default function EventsShow() {
   const [event, setEvent] = useState(null);
@@ -22,7 +22,7 @@ export default function EventsShow() {
         return;
       }
 
-      fetch('http://localhost:3001/api/v1/users', {
+      fetch('http://192.168.100.107:3001/api/v1/users', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,7 +39,7 @@ export default function EventsShow() {
         return;
       }
 
-      fetch(`http://localhost:3001/api/v1/events/${eventId}`, {
+      fetch(`http://192.168.100.107:3001/api/v1/events/${eventId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -59,7 +59,7 @@ export default function EventsShow() {
         return;
       }
 
-      fetch(`http://localhost:3001/api/v1/events/${eventId}/get_event_images`, {
+      fetch(`http://192.168.100.107:3001/api/v1/events/${eventId}/get_event_images`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -81,7 +81,7 @@ export default function EventsShow() {
       return;
     }
 
-    fetch(`http://localhost:3001/api/v1/events/${eventId}/mark_assistance`, {
+    fetch(`http://192.168.100.107:3001/api/v1/events/${eventId}/mark_assistance`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -94,6 +94,7 @@ export default function EventsShow() {
       .then((data) => {
         Alert.alert('Check-in successful');
         sendCheckInNotification();
+        navigation.replace('EventsShow', { eventId });
       })
       .catch((error) => console.error('Error checking in:', error));
   };
@@ -123,7 +124,7 @@ export default function EventsShow() {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.eventName}>{event.name}</Text>
 
-      <TouchableOpacity style={styles.addEventButton} onPress={() => navigation.navigate('AddEventPicture', { eventId })}>
+      <TouchableOpacity style={styles.addEventButton} onPress={() => navigation.navigate('EventPicture', { eventId })}>
         <Image source={AddEvent} style={styles.icon} />
       </TouchableOpacity>
 
@@ -204,6 +205,7 @@ const styles = StyleSheet.create({
   },
   attendingButton: {
     padding: 10,
+    backgroundColor: 'black',
   },
   attendeesTitle: {
     fontSize: 18,
