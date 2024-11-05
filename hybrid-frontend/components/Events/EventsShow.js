@@ -5,6 +5,7 @@ import * as Notifications from 'expo-notifications';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import CheckInIcon from '../../assets/check-in-icon.svg';  
 import AddEvent from '../../assets/add-event.png';
+import { Linking } from 'react-native';
 
 export default function EventsShow() {
   const [event, setEvent] = useState(null);
@@ -120,6 +121,12 @@ export default function EventsShow() {
 
   if (!event) return <Text>Loading event...</Text>;
 
+  const eventDate = new Date(event.date); 
+
+  const currentDate = new Date();
+
+  const hasEventPassed = currentDate < eventDate;
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.eventName}>{event.name}</Text>
@@ -132,24 +139,35 @@ export default function EventsShow() {
         <Image source={{ uri: '/path/to/event-image.jpg' }} style={styles.eventImage} />
       </View>
 
-      <View style={styles.attendingSection}>
+      
+
+      {hasEventPassed ? (
+        
+        <>
+        <View style={styles.attendingSection}>
         <TouchableOpacity onPress={handleCheckIn} style={styles.attendingButton}>
           <Image source={CheckInIcon} style={styles.icon} />
         </TouchableOpacity>
       </View>
-
-      <Text style={styles.attendeesTitle}>Attendees:</Text>
-      <FlatList
-        data={event.attendances.filter((attendee) => attendee.checked_in)}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.attendee}>
-            <Text style={styles.username}>
-              {users.find((user) => user.id === item.user_id)?.first_name || 'Unknown'}
-            </Text>
-          </View>
-        )}
-      />
+          <Text style={styles.attendeesTitle}>Attendees:</Text>
+          <FlatList
+            data={event.attendances.filter((attendee) => attendee.checked_in)}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.attendee}>
+                <Text style={styles.username}>
+                  {users.find((user) => user.id === item.user_id)?.first_name || 'Unknown'}
+                </Text>
+              </View>
+            )}
+          />
+        </>
+      ) : (
+        <Button
+          title="Go to Event Page"
+          onPress={() => Linking.openURL("https://www.youtube.com/watch?v=dQw4w9WgXcQ")} // Supone que tienes un enlace en event.external_link
+        />
+      )}
 
       <Text style={styles.galleryTitle}>Event Gallery</Text>
       <FlatList

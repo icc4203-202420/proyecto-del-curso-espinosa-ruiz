@@ -121,49 +121,53 @@ export default function EventPicture() {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Add Event Picture</Text>
+    <FlatList
+      data={filteredUsers}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <TouchableOpacity onPress={() => handleTagUser(item)} style={styles.userSuggestion}>
+          <Text>{item.handle}</Text>
+        </TouchableOpacity>
+      )}
+      ListHeaderComponent={() => (
+        <View style={styles.container}>
+          <Text style={styles.title}>Add Event Picture</Text>
 
-      <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-        {image ? (
-          <Image source={{ uri: image }} style={styles.image} />
-        ) : (
-          <Text style={styles.placeholderText}>Tap to select image</Text>
-        )}
-      </TouchableOpacity>
-
-      <TextInput
-        style={styles.descriptionInput}
-        placeholder="Add a description"
-        value={description}
-        onChangeText={setDescription}
-      />
-
-      <TextInput
-        style={styles.tagUsersInput}
-        placeholder="Tag users by handle"
-        value={userSearch}
-        onChangeText={handleUserSearch}
-      />
-
-      <FlatList
-        data={filteredUsers}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleTagUser(item)} style={styles.userSuggestion}>
-            <Text>{item.handle}</Text>
+          <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+            {image ? (
+              <Image source={{ uri: image }} style={styles.image} />
+            ) : (
+              <Text style={styles.placeholderText}>Tap to select image</Text>
+            )}
           </TouchableOpacity>
-        )}
-      />
 
-      <View style={styles.taggedUsers}>
-        {taggedUsers.map((user, index) => (
-          <Text key={index} style={styles.taggedUser}>{user.handle}</Text>
-        ))}
-      </View>
+          <TextInput
+            style={styles.descriptionInput}
+            placeholder="Add a description"
+            value={description}
+            onChangeText={setDescription}
+          />
 
-      <Button title="Share Post" onPress={handleSubmit} />
-    </View>
+          <TextInput
+            style={styles.tagUsersInput}
+            placeholder="Tag users by handle"
+            value={userSearch}
+            onChangeText={handleUserSearch}
+          />
+        </View>
+      )}
+      ListFooterComponent={() => (
+        <View style={styles.container}>
+          <View style={styles.taggedUsers}>
+            {taggedUsers.map((user, index) => (
+              <Text key={index} style={styles.taggedUser}>{user.handle}</Text>
+            ))}
+          </View>
+
+          <Button title="Share Post" onPress={handleSubmit} />
+        </View>
+      )}
+    />
   );
 }
 

@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       resources :bars
-      get 'current_user', to: 'users#current'  # Ruta para obtener el usuario actual
+      get 'current_user', to: 'users#current' 
       
       resources :beers do
         resources :reviews, only: [:index, :create]

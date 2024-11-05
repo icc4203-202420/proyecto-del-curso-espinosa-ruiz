@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import * as Notifications from 'expo-notifications';
-import { AuthContext, useAuth } from '../Auth/AuthContext';
+import { useAuth } from '../Auth/AuthContext';
 
 function UserSearch() {
-  const { userToken, logout } = useAuth();
+  const { userToken } = useAuth();
   const [search, setSearch] = useState('');
   const [eventSearch, setEventSearch] = useState('');
   const [users, setUsers] = useState([]);
   const [events, setEvents] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
@@ -26,7 +28,6 @@ function UserSearch() {
       try {
         const token = await SecureStore.getItemAsync('userToken');
         if (!token) throw new Error('No token found');
-        console.log(token);
 
         const response = await fetch('http://192.168.100.107:3001/api/v1/current_user', {
           headers: {
@@ -35,10 +36,11 @@ function UserSearch() {
         });
         const data = await response.json();
         setCurrentUser(data);
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching current user:', error);
         Alert.alert('Error', 'Session expired, please login again');
+      } finally {
+        setLoading(false);
       }
     };
     fetchCurrentUser();
@@ -49,7 +51,7 @@ function UserSearch() {
       const token = await SecureStore.getItemAsync('userToken');
       if (!token) throw new Error('No token found');
 
-      const response = await fetch(`http://192.168.100.107:3001/api/v1/users?handle=${search}`, {
+      const response = await fetch(`http://192.168.100.107:3001/api/v1/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -58,10 +60,36 @@ function UserSearch() {
       if (!response.ok) throw new Error('Error fetching users');
       const data = await response.json();
       setUsers(data);
+      setFilteredUsers(data); // Actualizar lista filtrada inicialmente
     } catch (error) {
       console.error('Error fetching users:', error);
     }
   };
+
+  const fetchEvents = async () => {
+    try {
+      const token = await SecureStore.getItemAsync('userToken');
+      if (!token) throw new Error('No token found');
+
+      const response = await fetch(`http://192.168.100.107:3001/api/v1/events`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error('Error fetching events');
+      const data = await response.json();
+      setEvents(data);
+      setFilteredEvents(data); // Actualizar lista filtrada inicialmente
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+    fetchEvents();
+  }, []);
 
   const handleCreateFriendship = async () => {
     if (selectedUser && currentUser) {
@@ -73,10 +101,11 @@ function UserSearch() {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
+          
           body: JSON.stringify({
             friendship: {
               friend_id: selectedUser.id,
-              event_id: selectedEvent ? selectedEvent.id : null,
+              event_id: selectedEvent ? selectedEvent.bar_id : null,
             },
           }),
         });
@@ -84,16 +113,34 @@ function UserSearch() {
         if (!response.ok) throw new Error('Friendship creation failed');
         
         const data = await response.json();
-        console.log(data);
         setFriendshipCreated(true);
-
-        // Enviar notificación push al amigo agregado
         sendPushNotification(selectedUser.pushToken);
       } catch (error) {
         console.error('Error creating friendship:', error);
         Alert.alert('Error', 'Failed to create friendship');
       }
     }
+  };
+
+  const handleFilterUsers = () => {
+    if (!search) {
+      setFilteredUsers([]);
+      return;
+    }
+    else {
+    const filtered = users.filter(user => user.handle.toLowerCase().includes(search.toLowerCase()));
+    setFilteredUsers(filtered);}
+
+  };
+
+  const handleFilterEvents = () => {
+    if (!eventSearch) {
+      setFilteredEvents([]);
+      return;
+    }
+    else {
+    const filtered = events.filter(event => event.name.toLowerCase().includes(eventSearch.toLowerCase()));
+    setFilteredEvents(filtered);}
   };
 
   return (
@@ -111,9 +158,9 @@ function UserSearch() {
             value={search}
             onChangeText={setSearch}
           />
-          <Button title="Search" onPress={fetchUsers} />
+          <Button title="Search" onPress={handleFilterUsers} />
           <FlatList
-            data={users}
+            data={filteredUsers}
             keyExtractor={item => item.id.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => setSelectedUser(item)} style={styles.userCard}>
@@ -135,9 +182,9 @@ function UserSearch() {
             value={eventSearch}
             onChangeText={setEventSearch}
           />
-          <Button title="Search Events" onPress={() => {}} />
+          <Button title="Search Events" onPress={handleFilterEvents} />
           <FlatList
-            data={events}
+            data={filteredEvents}
             keyExtractor={item => item.id.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => setSelectedEvent(item)} style={styles.eventCard}>
@@ -197,8 +244,6 @@ async function registerForPushNotificationsAsync() {
   }
 
   const token = (await Notifications.getExpoPushTokenAsync()).data;
-  console.log(token);
-  // Guarda el token en tu backend junto con el usuario
 }
 
 const styles = StyleSheet.create({
