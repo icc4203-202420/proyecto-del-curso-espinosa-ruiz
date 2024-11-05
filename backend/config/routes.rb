@@ -31,6 +31,7 @@ Rails.application.routes.draw do
           post 'mark_assistance'  
           post 'upload_event_image'
           get 'get_event_images'
+          post 'generate_event_summary_video'
         end
       end
 

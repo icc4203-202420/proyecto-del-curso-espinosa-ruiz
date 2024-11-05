@@ -6,6 +6,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import CheckInIcon from '../../assets/check-in-icon.svg';  
 import AddEvent from '../../assets/add-event.png';
 import { Linking } from 'react-native';
+import { Video } from 'expo-av';
 
 export default function EventsShow() {
   const [event, setEvent] = useState(null);
@@ -13,6 +14,7 @@ export default function EventsShow() {
   const [eventImages, setEventImages] = useState([]);
   const route = useRoute();
   const navigation = useNavigation();
+  const [videoUrl, setVideoUrl] = useState(null);
   const { eventId } = route.params;
 
   useEffect(() => {
@@ -100,6 +102,35 @@ export default function EventsShow() {
       .catch((error) => console.error('Error checking in:', error));
   };
 
+  const handleGenerateSummary = async () => {
+    try {
+      const token = await SecureStore.getItemAsync('userToken');
+      if (!token) {
+        Alert.alert('Error', 'No token found');
+        return;
+      }
+      const response = await fetch(`http://192.168.100.107:3001/api/v1/events/${event.id}/generate_event_summary_video`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        Alert.alert("Resumen generado", "Se ha generado el video de resumen.");
+        console.log("Video URL:", data.video_url);
+        setVideoUrl(data.video_url);
+      } else {
+        Alert.alert("Error", "No se pudo generar el resumen.");
+
+      }
+    } catch (error) {
+      console.error("Error al generar el resumen:", error);
+    }
+  };
+
   const sendCheckInNotification = async () => {
     const message = {
       to: "<FRIEND_EXPO_PUSH_TOKEN>",
@@ -161,25 +192,46 @@ export default function EventsShow() {
               </View>
             )}
           />
+          <Text style={styles.galleryTitle}>Event Gallery</Text>
+          <FlatList
+            data={eventImages}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item, index }) => (
+              <View style={styles.galleryImage}>
+                <Text>Image {index + 1}</Text>
+                <Image source={{ uri: item.url }} style={styles.image} />
+              </View>
+            )}
+      />
         </>
+        
       ) : (
+        <>
         <Button
-          title="Go to Event Page"
-          onPress={() => Linking.openURL("https://www.youtube.com/watch?v=dQw4w9WgXcQ")} // Supone que tienes un enlace en event.external_link
+          title="Resumen"
+          onPress={handleGenerateSummary} 
         />
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ fontSize: 20, marginBottom: 20 }}>Resumen del Evento</Text>
+      {videoUrl ? (
+        <Video
+          source={{ uri: videoUrl }}
+          rate={1.0}
+          volume={1.0}
+          isMuted={false}
+          resizeMode="cover"
+          shouldPlay
+          style={{ width: 300, height: 200 }}
+          useNativeControls
+        />
+      ) : (
+        <Text>Presione resumen para continuar. El evento terminó el {eventDate.toLocaleDateString()}.</Text>
+      )}
+    </View>
+        </>
       )}
 
-      <Text style={styles.galleryTitle}>Event Gallery</Text>
-      <FlatList
-        data={eventImages}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item, index }) => (
-          <View style={styles.galleryImage}>
-            <Text>Image {index + 1}</Text>
-            <Image source={{ uri: item.url }} style={styles.image} />
-          </View>
-        )}
-      />
+      
     </ScrollView>
   );
 }

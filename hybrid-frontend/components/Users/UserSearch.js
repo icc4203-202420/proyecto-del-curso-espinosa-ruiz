@@ -105,7 +105,7 @@ function UserSearch() {
           body: JSON.stringify({
             friendship: {
               friend_id: selectedUser.id,
-              event_id: selectedEvent ? selectedEvent.bar_id : null,
+              event_id: selectedEvent ? selectedEvent.id : null,
             },
           }),
         });

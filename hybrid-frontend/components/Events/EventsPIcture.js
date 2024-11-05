@@ -35,65 +35,78 @@ export default function EventPicture() {
 
     fetchUsers();
   }, []);
-
   const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission denied', 'We need permissions to access your photos');
+      return;
+    }
+  
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     });
-
-    if (!result.canceled) {
-      setImage(result.uri);
+  
+    // Utiliza result.assets[0].uri para obtener el URI de la imagen seleccionada
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      console.log("Image URI:", result.assets[0].uri); // Para verificar en la consola
+      setImage(result.assets[0].uri);
+    } else {
+      console.log("Image selection was canceled or no URI found");
     }
-  };
-
-  const handleTagUser = (user) => {
-    if (!taggedUsers.includes(user)) {
-      setTaggedUsers([...taggedUsers, user]);
-    }
-    setUserSearch('');
   };
 
   const handleUserSearch = (text) => setUserSearch(text);
 
+
   const handleSubmit = async () => {
-    const token = await SecureStore.getItemAsync('userToken');
-    if (!token) {
-      Alert.alert('Error', 'No token found');
-      return;
-    }
+  const token = await SecureStore.getItemAsync('userToken');
+  if (!token) {
+    Alert.alert('Error', 'No token found');
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append('description', description);
-    formData.append('tagged_users', JSON.stringify(taggedUsers.map((user) => user.id)));
+  const formData = new FormData();
+  formData.append('description', description);
+  formData.append('tagged_users', JSON.stringify(taggedUsers.map((user) => user.id)));
 
-    if (image) {
-      const uriParts = image.split('.');
-      const fileType = uriParts[uriParts.length - 1];
-      formData.append('picture', {
-        uri: image,
-        name: `photo.${fileType}`,
-        type: `image/${fileType}`,
-      });
-    }
+  if (image) {
+    // Asegúrate de que la URI sea compatible
+    const uriParts = image.split('.');
+    const fileType = uriParts[uriParts.length - 1];
 
-    fetch(`http://192.168.100.107:3001/api/v1/events/${eventId}/upload_event_image`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      },
-      body: formData,
+    formData.append('picture', {
+      uri: image,
+      name: `photo.${fileType}`,
+      type: `image/${fileType}`,
+    });
+  } else {
+    Alert.alert('Error', 'Please select an image to upload');
+    return;
+  }
+
+  fetch(`http://192.168.100.107:3001/api/v1/events/${eventId}/upload_event_image`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    },
+    body: formData,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Error uploading image');
+      }
+      return response.json();
     })
-      .then((response) => response.json())
-      .then((data) => {
-        Alert.alert('Success', 'Event picture uploaded');
-        sendTagNotifications();
-        navigation.goBack();
-      })
-      .catch((error) => console.error('Error uploading event picture:', error));
-  };
+    .then((data) => {
+      Alert.alert('Success', 'Event picture uploaded');
+      sendTagNotifications();
+      navigation.goBack();
+    })
+    .catch((error) => console.error('Error uploading event picture:', error));
+};
 
   const sendTagNotifications = () => {
     taggedUsers.forEach(async (user) => {
@@ -119,6 +132,13 @@ export default function EventPicture() {
   const filteredUsers = users.filter((user) =>
     user.handle.toLowerCase().includes(userSearch.toLowerCase())
   );
+
+  const handleTagUser = (user) => {
+    if (!taggedUsers.includes(user)) {
+      setTaggedUsers([...taggedUsers, user]);
+    }
+    setUserSearch('');
+  };
 
   return (
     <FlatList
