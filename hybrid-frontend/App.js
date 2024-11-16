@@ -14,6 +14,7 @@ import BarList from './components/Bars/BarList';
 import BarEvents from './components/Bars/BarEvents';
 import EventsShow from './components/Events/EventsShow';
 import EventPicture from './components/Events/EventsPIcture'; 
+import Feed from './components/Feed';
 
 const Stack = createStackNavigator();
 
@@ -40,6 +41,7 @@ function AppNavigator() {
           <Stack.Screen name="BarEvents" component={BarEvents} options={{ title: 'Bar Events' }} />
           <Stack.Screen name="EventsShow" component={EventsShow} options={{ title: 'Event Details' }} />
           <Stack.Screen name="EventPicture" component={EventPicture} options={{ title: 'Add Event Picture' }} />
+          <Stack.Screen name="Feed" component={Feed} options={{ title: 'Feed' }} />
         </>
       ) : (
         <>

@@ -20,6 +20,9 @@ const Navbar = () => {
       <TouchableOpacity onPress={() => navigation.navigate('BarList')}>
         <Icon name="glass" size={30} color="#73B0AB" />
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Feed')}>
+        <Icon name="comments" size={30} color="#73B0AB" />
+      </TouchableOpacity>
     </View>
   );
 };
