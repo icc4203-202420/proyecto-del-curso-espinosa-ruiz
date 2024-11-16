@@ -10,7 +10,7 @@ class API::V1::EventsController < ApplicationController
 
     def index
       @events = Event.all
-      render json: { events: @events }, status: :ok
+      render json: @events , status: :ok
     end
     
     # `GET /api/v1/events/:id`
@@ -54,6 +54,47 @@ class API::V1::EventsController < ApplicationController
         end
     end
 
+    def generate_event_summary_video
+      event = Event.find(params[:id])
+  
+      # Asegúrate de que las imágenes existen y obtén sus rutas
+      event_pictures = EventPicture.where(event_id: event.id)
+      image_paths = event_pictures.map do |event_picture|
+        if event_picture.event_picture.attached?
+          ActiveStorage::Blob.service.path_for(event_picture.event_picture.key)
+        end
+      end.compact
+  
+      if image_paths.empty?
+        render json: { error: "No images available for the event" }, status: :unprocessable_entity
+        return
+      end
+  
+      # Define la ruta de salida para el video
+      output_video_path = Rails.root.join("storage", "videos", "#{event.id}_summary.mp4")
+  
+      # Asegúrate de que la carpeta de salida exista
+      FileUtils.mkdir_p(File.dirname(output_video_path))
+  
+      # Comando FFmpeg para generar el video
+      ffmpeg_command = "ffmpeg -framerate 1 #{image_paths.map { |path| "-i '#{path}'" }.join(' ')} -c:v libx264 -r 30 -pix_fmt yuv420p #{output_video_path}"
+  
+      # Ejecutar el comando FFmpeg y verificar su éxito
+      system(ffmpeg_command)
+  
+      # Verifica que el archivo de video fue generado
+      unless File.exist?(output_video_path)
+        render json: { error: "Failed to generate video summary" }, status: :internal_server_error
+        return
+      end
+  
+      # Adjuntar el video generado al evento mediante ActiveStorage
+      event.summary_video.attach(io: File.open(output_video_path), filename: "#{event.id}_summary.mp4", content_type: "video/mp4")
+  
+      render json: { message: "Summary video generated successfully", video_url: url_for(event.summary_video) }, status: :ok
+    end
+
+
     def mark_assistance
         @attendance = Attendance.find_by(user_id: current_user.id, event_id: params[:id])
         if @attendance
@@ -69,7 +110,7 @@ class API::V1::EventsController < ApplicationController
       @event = Event.find(params[:id])
       @user = current_user
       @event_picture = EventPicture.new(event_id: @event.id, user_id: @user.id, description: params[:description])
-    
+  
       if params[:picture].present?
         @event_picture.event_picture.attach(params[:picture])
         if @event_picture.save
@@ -79,7 +120,7 @@ class API::V1::EventsController < ApplicationController
           end
           render json: { message: 'Image uploaded successfully' }, status: :created
         else
-          render json: {message: 'Error uploading image'}, status: :unprocessable_entity
+          render json: { message: 'Error uploading image' }, status: :unprocessable_entity
         end
       else
         render json: { error: 'No image provided' }, status: :unprocessable_entity
