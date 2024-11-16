@@ -44,11 +44,13 @@ class API::V1::UsersController < ApplicationController
     render json: @friends, status: :ok
   end
 
-  # POST /api/v1/users/:id/friendships - Crea una nueva amistad
   def create_friendship
-    # Encontrar el usuario que será el amigo
+    Rails.logger.info "Friendship params: #{friendship_params[:event_id]}"
     friend = User.find_by(id: friendship_params[:friend_id])
-  
+    if friendship_params[:event_id]
+      bar = Event.find_by(id: friendship_params[:event_id])
+      Rails.logger.info "Bar: #{bar}"
+    end
     if friend.nil?
       render json: { error: 'Friend not found' }, status: :not_found
     elsif current_user == friend
@@ -56,25 +58,26 @@ class API::V1::UsersController < ApplicationController
     elsif Friendship.exists?(user: current_user, friend: friend) || Friendship.exists?(user: friend, friend: current_user)
       render json: { error: 'Friendship already exists' }, status: :unprocessable_entity
     else
-      # Crear la amistad usando current_user como el "user" y el friend_id recibido en los parámetros
-      friendship = current_user.friendships.build(friend: friend)
+      if friendship_params[:event_id]
+        friendship = current_user.friendships.build(friend: friend, event: bar)
+
+      else
+        friendship = current_user.friendships.build(friend: friend)
+      end
   
       if friendship.save
         render json: { message: 'Friendship created successfully' }, status: :created
       else
-        # Añade un log para imprimir los errores en la consola del servidor
         Rails.logger.debug "Friendship creation failed: #{friendship.errors.full_messages.join(', ')}"
         render json: { errors: friendship.errors.full_messages }, status: :unprocessable_entity
       end
     end
   end
   
-
   private
 
-  # Método para permitir solo los parámetros necesarios
   def friendship_params
-    params.require(:friendship).permit(:friend_id)
+    params.require(:friendship).permit(:friend_id, :event_id)
   end
 
   def set_user

@@ -21,7 +21,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :feeds, only: [:index] #Aca agregue esto
       resources :bars
-      get 'current_user', to: 'users#current'  # Ruta para obtener el usuario actual
+      get 'current_user', to: 'users#current' 
       
       resources :beers do
         resources :reviews, only: [:index, :create]
@@ -32,6 +32,7 @@ Rails.application.routes.draw do
           post 'mark_assistance'  
           post 'upload_event_image'
           get 'get_event_images'
+          post 'generate_event_summary_video'
         end
       end
 

@@ -1,7 +1,10 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { AuthContext, useAuth } from './Auth/AuthContext';
+
 
 const Home = ({ navigation }) => {
+  const { logout } = useAuth();
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to the Home Screen!</Text>
@@ -18,7 +21,7 @@ const Home = ({ navigation }) => {
           style={styles.button}
           onPress={() => navigation.navigate('UserSearch')}
         >
-          <Text style={styles.buttonText}>Go to User Profile</Text>
+          <Text style={styles.buttonText}>Add a Friend</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.inputContainer}>
@@ -29,6 +32,14 @@ const Home = ({ navigation }) => {
           <Text style={styles.buttonText}>Go to Bars</Text>
         </TouchableOpacity>
         </View>
+        <View style={styles.inputContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={logout}
+        >
+          <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
