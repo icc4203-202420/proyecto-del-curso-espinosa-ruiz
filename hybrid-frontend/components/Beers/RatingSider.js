@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Slider } from 'react-native-elements';
+import config from './config';
 
 const RatingSlider = ({ rating, setRating }) => {
   const handleSliderChange = (value) => {

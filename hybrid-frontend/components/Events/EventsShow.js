@@ -7,6 +7,7 @@ import CheckInIcon from '../../assets/check-in-icon.svg';
 import AddEvent from '../../assets/add-event.png';
 import { Linking } from 'react-native';
 import { Video } from 'expo-av';
+import config from '../config';
 
 export default function EventsShow() {
   const [event, setEvent] = useState(null);
@@ -25,7 +26,7 @@ export default function EventsShow() {
         return;
       }
 
-      fetch('http://192.168.100.107:3001/api/v1/users', {
+      fetch(`${config.apiBaseUrl}/api/v1/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -42,7 +43,7 @@ export default function EventsShow() {
         return;
       }
 
-      fetch(`http://192.168.100.107:3001/api/v1/events/${eventId}`, {
+      fetch(`${config.apiBaseUrl}/api/v1/events/${eventId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -62,7 +63,7 @@ export default function EventsShow() {
         return;
       }
 
-      fetch(`http://192.168.100.107:3001/api/v1/events/${eventId}/get_event_images`, {
+      fetch(`${config.apiBaseUrl}/api/v1/events/${eventId}/get_event_images`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -84,7 +85,7 @@ export default function EventsShow() {
       return;
     }
 
-    fetch(`http://192.168.100.107:3001/api/v1/events/${eventId}/mark_assistance`, {
+    fetch(`${config.apiBaseUrl}/api/v1/events/${eventId}/mark_assistance`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -109,7 +110,7 @@ export default function EventsShow() {
         Alert.alert('Error', 'No token found');
         return;
       }
-      const response = await fetch(`http://192.168.100.107:3001/api/v1/events/${event.id}/generate_event_summary_video`, {
+      const response = await fetch(`${config.apiBaseUrl}/api/v1/events/${event.id}/generate_event_summary_video`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -140,7 +141,7 @@ export default function EventsShow() {
       data: { screen: 'EventsShow', eventId },
     };
 
-    await fetch('https://exp.host/--/api/v2/push/send', {
+    await fetch(`${config.apiBaseUrl}/api/v2/push/send`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

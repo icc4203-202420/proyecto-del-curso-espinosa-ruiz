@@ -68,6 +68,11 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
+  config.hosts << "10.33.0.139"
+
+  config.action_cable.url = "ws://10.33.0.139:3001/cable"
+config.action_cable.allowed_request_origins = ["http://10.33.0.139:3001", "http://localhost:3001"]
+
   
-  config.action_mailer.default_url_options = { host: '192.168.56.1', port: 3000 }
+  config.action_mailer.default_url_options = { host: '10.33.0.139', port: 3001 }
 end

@@ -24,6 +24,7 @@ class API::V1::ReviewsController < ApplicationController
   def create
     @review = @user.reviews.build(review_params)
     if @review.save
+      ActionCable.server.broadcast "feed_channel", @review.as_json(include: :user)
       render json: @review, status: :created, location: api_v1_review_url(@review)
     else
       render json: @review.errors, status: :unprocessable_entity

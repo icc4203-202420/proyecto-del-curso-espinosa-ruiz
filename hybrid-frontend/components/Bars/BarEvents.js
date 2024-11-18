@@ -5,6 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 import Divider from '../../assets/divider.svg';
 import likeIcon from '../../assets/like-icon.svg';
 import backIcon from '../../assets/back-icon.svg';
+import config from '../config';
 
 export default function BarEvents() {
   const [events, setEvents] = useState([]);
@@ -21,7 +22,7 @@ export default function BarEvents() {
         return;
       }
 
-      fetch(`http://192.168.100.107/api/v1/bars/${barId}`, {
+      fetch(`${config.apiBaseUrl}/api/v1/bars/${barId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -47,7 +48,7 @@ export default function BarEvents() {
         return;
       }
 
-      fetch('http://192.168.100.107/api/v1/events', {
+      fetch(`${config.apiBaseUrl}/api/v1/events`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, TouchableOpacity, Alert, ActivityIndicator, StyleSheet } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import * as Notifications from 'expo-notifications';
+import config from '../config';
 
 export default function BarList({ navigation }) {
   const [bars, setBars] = useState([]);
   const [search, setSearch] = useState('');
   const [originalBars, setOriginalBars] = useState([]);
   const [loading, setLoading] = useState(true);
+  
 
   useEffect(() => {
     const fetchBars = async () => {
@@ -18,7 +20,7 @@ export default function BarList({ navigation }) {
           return;
         }
 
-        const response = await fetch('http://192.168.100.107:3001/api/v1/bars', {
+        const response = await fetch(`${config.apiBaseUrl}/api/v1/bars`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           }
@@ -66,7 +68,7 @@ export default function BarList({ navigation }) {
       const token = await SecureStore.getItemAsync('userToken');
       if (!token) throw new Error('No token found');
 
-      const response = await fetch(`http://192.168.100.107:3001/api/v1/bars/${bar.id}/checkin`, {
+      const response = await fetch(`${config.apiBaseUrl}/api/v1/bars/${bar.id}/checkin`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -95,7 +97,7 @@ export default function BarList({ navigation }) {
       data: { screen: 'EventDetails', eventId },
     };
 
-    await fetch('https://exp.host/--/api/v2/push/send', {
+    await fetch(`${config.apiBaseUrl}/api/v2/push/send`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

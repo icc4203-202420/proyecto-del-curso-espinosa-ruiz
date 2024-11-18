@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
+import config from '../config';
 
 export default function BeerList() {
   const [search, setSearch] = useState('');
@@ -20,7 +21,7 @@ export default function BeerList() {
           return;
         }
 
-        const response = await fetch('http://192.168.100.107:3001/api/v1/beers', {
+        const response = await fetch(`${config.apiBaseUrl}/api/v1/beers`, {
           headers: {
             'Authorization': `Bearer ${token}`, // Incluir el token en las cabeceras
           },
@@ -68,7 +69,7 @@ export default function BeerList() {
       <View style={styles.beerCard}>
         <Image
           style={styles.beerImage}
-          source={{ uri: item.image_url || 'https://via.placeholder.com/100' }} // Muestra imagen de la cerveza o un placeholder
+          source={{ uri: item.image_url || 'https://via.placeholder.com/100' }} 
         />
         <View style={styles.beerInfo}>
           <Text style={styles.beerName}>{item.name}</Text>

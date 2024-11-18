@@ -4,6 +4,7 @@ import * as SecureStore from 'expo-secure-store';
 import * as ImagePicker from 'expo-image-picker';
 import * as Notifications from 'expo-notifications';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import config from '../config';
 
 export default function EventPicture() {
   const [image, setImage] = useState(null);
@@ -23,7 +24,7 @@ export default function EventPicture() {
         return;
       }
 
-      fetch('http://192.168.100.107:3001/api/v1/users', {
+      fetch(`${config.apiBaseUrl}/api/v1/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -86,7 +87,7 @@ export default function EventPicture() {
     return;
   }
 
-  fetch(`http://192.168.100.107:3001/api/v1/events/${eventId}/upload_event_image`, {
+  fetch(`${config.apiBaseUrl}/api/v1/events/${eventId}/upload_event_image`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -118,7 +119,7 @@ export default function EventPicture() {
         data: { screen: 'EventPicture', eventId },
       };
 
-      await fetch('https://exp.host/--/api/v2/push/send', {
+      await fetch(`${config.apiBaseUrl}/api/v2/push/send`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',

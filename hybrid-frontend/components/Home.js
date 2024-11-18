@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { AuthContext, useAuth } from './Auth/AuthContext';
+import config from './config';
 
 
 const Home = ({ navigation }) => {
@@ -31,7 +32,15 @@ const Home = ({ navigation }) => {
         >
           <Text style={styles.buttonText}>Go to Bars</Text>
         </TouchableOpacity>
-        </View>
+      </View>
+      <View style={styles.inputContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Feed')}
+        >
+          <Text style={styles.buttonText}>Feed</Text>
+        </TouchableOpacity>
+      </View>
         <View style={styles.inputContainer}>
         <TouchableOpacity
           style={styles.button}

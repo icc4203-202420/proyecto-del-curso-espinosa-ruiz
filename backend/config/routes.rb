@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     registrations: 'api/v1/registrations'
   }
 
+  mount ActionCable.server, at: '/cable'
+
   # Health check route
   get "up" => "rails/health#show", as: :rails_health_check
 

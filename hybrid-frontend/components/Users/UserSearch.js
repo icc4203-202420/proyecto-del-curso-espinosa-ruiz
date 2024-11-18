@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, 
 import * as SecureStore from 'expo-secure-store';
 import * as Notifications from 'expo-notifications';
 import { useAuth } from '../Auth/AuthContext';
+import config from '../config';
 
 function UserSearch() {
   const { userToken } = useAuth();
@@ -29,7 +30,7 @@ function UserSearch() {
         const token = await SecureStore.getItemAsync('userToken');
         if (!token) throw new Error('No token found');
 
-        const response = await fetch('http://192.168.100.107:3001/api/v1/current_user', {
+        const response = await fetch(`${config.apiBaseUrl}/api/v1/current_user`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -51,7 +52,7 @@ function UserSearch() {
       const token = await SecureStore.getItemAsync('userToken');
       if (!token) throw new Error('No token found');
 
-      const response = await fetch(`http://192.168.100.107:3001/api/v1/users`, {
+      const response = await fetch(`${config.apiBaseUrl}/api/v1/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -71,7 +72,7 @@ function UserSearch() {
       const token = await SecureStore.getItemAsync('userToken');
       if (!token) throw new Error('No token found');
 
-      const response = await fetch(`http://192.168.100.107:3001/api/v1/events`, {
+      const response = await fetch(`${config.apiBaseUrl}/api/v1/events`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -95,7 +96,7 @@ function UserSearch() {
     if (selectedUser && currentUser) {
       try {
         const token = await SecureStore.getItemAsync('userToken');
-        const response = await fetch(`http://192.168.100.107:3001/api/v1/users/${currentUser.id}/friendships`, {
+        const response = await fetch(`${config.apiBaseUrl}/api/v1/users/${currentUser.id}/friendships`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -222,7 +223,7 @@ async function sendPushNotification(expoPushToken) {
     data: { screen: 'Home' },
   };
 
-  await fetch('https://exp.host/--/api/v2/push/send', {
+  await fetch(`${config.apiBaseUrl}/api/v2/push/send`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',

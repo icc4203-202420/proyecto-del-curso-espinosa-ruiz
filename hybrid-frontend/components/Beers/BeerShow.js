@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, FlatList, ActivityIndicator,
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Slider } from 'react-native-elements';  // Slider para la calificación
 import * as SecureStore from 'expo-secure-store';
+import config from '../config';
 
 const reviewValidationSchema = {
   text: value => value.length >= 15 || 'Review must contain at least 15 characters',
@@ -48,7 +49,7 @@ const BeerShow = () => {
         const token = await SecureStore.getItemAsync('userToken');
         if (!token) throw new Error('No token found');
 
-        const response = await fetch('http://192.168.100.107:3001/api/v1/current_user', {
+        const response = await fetch(`${config.apiBaseUrl}/api/v1/current_user`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -69,7 +70,7 @@ const BeerShow = () => {
         const token = await SecureStore.getItemAsync('userToken');
         if (!token) throw new Error('No token found');
 
-        const response = await fetch(`http://192.168.100.107:3001/api/v1/beers/${beerId}`, {
+        const response = await fetch(`${config.apiBaseUrl}/api/v1/beers/${beerId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -90,7 +91,7 @@ const BeerShow = () => {
       dispatch({ type: 'LOADING' });
       try {
         const token = await SecureStore.getItemAsync('userToken');
-        const response = await fetch(`http://192.168.100.107:3001/api/v1/beers/${beerId}/reviews`, {
+        const response = await fetch(`${config.apiBaseUrl}/api/v1/beers/${beerId}/reviews`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -127,7 +128,7 @@ const BeerShow = () => {
 
     try {
       const token = await SecureStore.getItemAsync('userToken');
-      const response = await fetch(`http://192.168.100.107:3001/api/v1/beers/${beerId}/reviews`, {
+      const response = await fetch(`${config.apiBaseUrl}/api/v1/beers/${beerId}/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

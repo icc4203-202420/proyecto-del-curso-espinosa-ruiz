@@ -3,6 +3,7 @@ import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, Pressable }
 import { useNavigation } from '@react-navigation/native'; // Para la navegación
 import { useAuth } from './AuthContext'; // Suponiendo que tu contexto de autenticación sigue igual
 import * as SecureStore from 'expo-secure-store';
+import config from '../config';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch('http://192.168.100.107:3001/api/v1/login', {
+      const response = await fetch(`${config.apiBaseUrl}/api/v1/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
