@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useReducer } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, FlatList, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, FlatList, ActivityIndicator, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { Slider } from 'react-native-elements';  // Slider para la calificación
 import * as SecureStore from 'expo-secure-store';
 import config from '../config';
 
@@ -17,7 +16,6 @@ const initialState = {
   userReview: null,
 };
 
-// Reducer para manejar los estados de las reseñas
 const reviewsReducer = (state, action) => {
   switch (action.type) {
     case 'LOADING':
@@ -34,15 +32,14 @@ const reviewsReducer = (state, action) => {
 const BeerShow = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const beerId = route.params.beerId;  // Obtener el ID de la cerveza desde los parámetros de la ruta
+  const beerId = route.params.beerId;
   const [beer, setBeer] = useState(null);
-  const [rating, setRating] = useState(3);  // Estado del slider
-  const [reviewText, setReviewText] = useState('');  // Estado del texto de la reseña
+  const [rating, setRating] = useState(null);
+  const [reviewText, setReviewText] = useState('');
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [state, dispatch] = useReducer(reviewsReducer, initialState);
 
-  // Obtener el usuario actual
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
@@ -63,7 +60,6 @@ const BeerShow = () => {
     fetchCurrentUser();
   }, []);
 
-  // Obtener detalles de la cerveza
   useEffect(() => {
     const fetchBeerDetails = async () => {
       try {
@@ -85,7 +81,6 @@ const BeerShow = () => {
     fetchBeerDetails();
   }, [beerId]);
 
-  // Manejar las reseñas usando useReducer
   useEffect(() => {
     const fetchReviews = async () => {
       dispatch({ type: 'LOADING' });
@@ -97,7 +92,7 @@ const BeerShow = () => {
           },
         });
         const data = await response.json();
-        
+
         const userReview = data.reviews.find(review => review.user_id === currentUser.id);
         const otherReviews = data.reviews.filter(review => review.user_id !== currentUser.id);
         dispatch({
@@ -113,14 +108,14 @@ const BeerShow = () => {
     };
 
     fetchReviews();
-  }, [beerId]);
+  }, [beerId, currentUser]);
 
   const handleNewReview = async () => {
-    // Validación
     if (!reviewValidationSchema.text(reviewText)) {
       Alert.alert('Error', 'Review must contain at least 15 characters');
       return;
     }
+
     if (!reviewValidationSchema.rating(rating)) {
       Alert.alert('Error', 'Rating must be between 1 and 5');
       return;
@@ -146,9 +141,9 @@ const BeerShow = () => {
 
       if (response.ok) {
         setShowReviewForm(false);
-        dispatch({ type: 'LOADING' });  // Refrescar las reseñas
+        dispatch({ type: 'LOADING' });
       } else {
-        console.error('Error al agregar reseña:', await response.text());
+        console.error('Error adding review:', await response.text());
       }
     } catch (error) {
       console.error('Error submitting review:', error);
@@ -161,14 +156,12 @@ const BeerShow = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Detalles de la cerveza */}
       <View style={styles.header}>
         <Text style={styles.title}>{beer.name}</Text>
         <Text style={styles.subtitle}>Brewery: {beer.brand?.brewery?.name}</Text>
         <Text style={styles.subtitle}>Average Rating: {beer.avg_rating}/5</Text>
       </View>
 
-      {/* Formulario de reseñas */}
       {showReviewForm && (
         <View style={styles.form}>
           <TextInput
@@ -178,30 +171,42 @@ const BeerShow = () => {
             onChangeText={setReviewText}
             multiline
           />
-          <Slider
-            value={rating}
-            onValueChange={setRating}
-            minimumValue={1}
-            maximumValue={5}
-            step={0.1}
-            thumbTintColor="#FFCC00"
-            minimumTrackTintColor="#FFCC00"
-            maximumTrackTintColor="#000"
-          />
-          <Button title="Submit Review" onPress={handleNewReview} />
-          <Button title="Cancel" onPress={() => setShowReviewForm(false)} />
+          <Text style={styles.subtitle}>Select Rating:</Text>
+          <View style={styles.ratingContainer}>
+            {[1, 2, 3, 4, 5].map(value => (
+              <TouchableOpacity
+                key={value}
+                style={[
+                  styles.ratingButton,
+                  rating === value && styles.ratingButtonSelected,
+                ]}
+                onPress={() => setRating(value)}
+              >
+                <Text style={styles.ratingText}>{value}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <TouchableOpacity style={styles.button} onPress={handleNewReview}>
+            <Text style={styles.buttonText}>Submit Review</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => setShowReviewForm(false)}>
+            <Text style={styles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
         </View>
       )}
 
-      <Button title={showReviewForm ? 'Close Review Form' : 'Add a Review'} onPress={() => setShowReviewForm(!showReviewForm)} />
+      <TouchableOpacity style={styles.button} onPress={() => setShowReviewForm(!showReviewForm)}>
+        <Text style={styles.buttonText}>{showReviewForm ? 'Close Review Form' : 'Add a Review'}</Text>
+      </TouchableOpacity>
 
-      {/* Lista de reseñas */}
       <FlatList
         data={state.reviews}
         keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.reviewItem}>
-            <Text style={styles.reviewerName}>{item.user ? `${item.user.first_name} ${item.user.last_name}` : 'Anonymous'}</Text>
+            <Text style={styles.reviewerName}>
+              {item.user ? `${item.user.first_name} ${item.user.last_name}` : 'Anonymous'}
+            </Text>
             <Text>Rating: {item.rating}/5</Text>
             <Text>{item.text}</Text>
           </View>
@@ -216,41 +221,98 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFDD',
   },
   header: {
     marginBottom: 16,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#000',
+    backgroundColor: '#E5F5E5',
+    padding: 16,
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+    fontFamily: 'Comic Sans MS',
   },
   subtitle: {
     fontSize: 16,
-    marginBottom: 8,
+    textAlign: 'center',
+    color: '#000',
   },
   form: {
     marginBottom: 16,
+    borderRadius: 25,
+    backgroundColor: '#006A71',
+    padding: 16,
   },
   textArea: {
     height: 100,
-    borderColor: 'gray',
-    borderWidth: 1,
+    borderRadius: 25,
+    backgroundColor: '#006A71',
+    color: '#FFF',
     padding: 10,
     marginBottom: 16,
   },
+  ratingContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 16,
+  },
+  ratingButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#73B0AB',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#000',
+  },
+  ratingButtonSelected: {
+    backgroundColor: '#FFCC00',
+  },
+  ratingText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   reviewItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'lightgray',
-    paddingVertical: 12,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#000',
+    backgroundColor: '#73B0AB',
+    padding: 16,
+    marginBottom: 16,
   },
   reviewerName: {
     fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 4,
+    color: '#FFF',
   },
   reviewHeader: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
+    color: '#000',
+    textAlign: 'center',
+  },
+  button: {
+    paddingVertical: 10,
+    borderRadius: 25,
+    backgroundColor: '#ff0077',
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

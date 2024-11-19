@@ -251,22 +251,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#FFF',
+    backgroundColor: '#FFFFDD', // Fondo principal
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
     color: '#000',
+    textAlign: 'center',
+    fontFamily: 'Comic Sans MS', // Fuente personalizada
   },
   input: {
     height: 40,
-    borderColor: '#CCC',
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    marginBottom: 10,
     borderRadius: 25,
-    backgroundColor: '#E5F5E5',
+    backgroundColor: '#E5F5E5', // Fondo para los inputs
+    paddingHorizontal: 15,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#000', // Borde negro
+    color: '#000', // Texto negro
   },
   loading: {
     flex: 1,
@@ -275,42 +278,46 @@ const styles = StyleSheet.create({
   },
   userCard: {
     padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
+    backgroundColor: '#73B0AB', // Fondo para las tarjetas de usuario
+    borderRadius: 25, // Esquinas redondeadas
     borderColor: '#000',
     borderWidth: 1,
     marginBottom: 10,
   },
   userText: {
-    color: '#000',
+    color: '#FFF', // Texto blanco
+    fontWeight: 'bold',
   },
   userInfoCard: {
     padding: 20,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
+    backgroundColor: '#73B0AB', // Fondo para la información de usuario
+    borderRadius: 25,
     borderColor: '#000',
     borderWidth: 1,
     marginTop: 20,
   },
   userInfoText: {
     fontSize: 16,
-    color: '#000',
+    color: '#FFF', // Texto blanco
+    textAlign: 'center',
   },
   eventCard: {
     padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
+    backgroundColor: '#73B0AB', // Fondo para las tarjetas de eventos
+    borderRadius: 25,
     borderColor: '#000',
     borderWidth: 1,
     marginBottom: 10,
   },
   eventText: {
-    color: '#000',
+    color: '#FFF', // Texto blanco
+    fontWeight: 'bold',
   },
   successMessage: {
     color: 'green',
     marginTop: 10,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

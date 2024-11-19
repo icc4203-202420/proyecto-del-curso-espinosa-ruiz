@@ -1,13 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import * as SecureStore from 'expo-secure-store';
 import config from './config';
+import { createConsumer } from '@rails/actioncable';
+import { EventRegister } from 'react-native-event-listeners';
+import { useNavigation } from '@react-navigation/native';
+import { set } from 'react-hook-form';
+
+global.addEventListener = EventRegister.addEventListener;
+global.removeEventListener = EventRegister.removeEventListener;
 
 const Feed = () => {
   const [feedItems, setFeedItems] = useState([]);
+  const [filteredFeed, setFilterFeed] = useState([]); 
   const [token, setToken] = useState(null);
   const [users, setUsers] = useState(null);
   const [beers, setBeers] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [filterType, setFilterType] = useState(null);
+  const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -23,159 +38,225 @@ const Feed = () => {
       return acc;
     }, {});
 
-    const fetchUsers = async () => {
-      const token = await SecureStore.getItemAsync('userToken');
-      if (!token) {
-        Alert.alert('Error', 'No token found');
-        return;
-      }
-
-      fetch(`${config.apiBaseUrl}/api/v1/users`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => setUsers(data))
-        .catch((error) => console.error('Error fetching users:', error));
-    };
-
-  const fetchBeers = async () => {
-    if (!token) {
-      console.error("Token not available");
-      return;
-    }
+  const fetchUsers = async () => {
+    if (!token) return;
 
     try {
-      const response = await fetch(`${config.apiBaseUrl}/api/v1/beers`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await fetch(`${config.apiBaseUrl}/api/v1/users`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      const text = await response.text();
-      try {
-        const data = JSON.parse(text);
-        setBeers(transformArrayToObject(data.beers));
-      } catch (jsonError) {
-        console.error("Error parsing JSON:", jsonError);
-        console.error("Response text:", text);
-      }
+      const data = await response.json();
+      setUsers(data);
     } catch (error) {
-      console.error("Error fetching beers:", error);
+      console.error('Error fetching users:', error);
     }
   };
 
-  const fetchInitialFeed = async () => {
-    if (!token) {
-      console.error("Token not available");
-      return;
+  const fetchBeers = async () => {
+    if (!token) return;
+
+    try {
+      const response = await fetch(`${config.apiBaseUrl}/api/v1/beers`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      setBeers(transformArrayToObject(data.beers));
+    } catch (error) {
+      console.error('Error fetching beers:', error);
     }
+  };
+
+  const fetchFeed = async () => {
+    if (!token) return;
 
     try {
       const response = await fetch(`${config.apiBaseUrl}/api/v1/feeds`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-      const text = await response.text();
-      try {
-        const data = JSON.parse(text);
-        setFeedItems(data.feed);
-      } catch (jsonError) {
-        console.error("Error parsing JSON:", jsonError);
-        console.error("Response text:", text);
-      }
+      const data = await response.json();
+      setFeedItems(data.feed);
+      setFilterFeed(data.feed);
     } catch (error) {
-      console.error("Error fetching feed:", error);
+      console.error('Error fetching feed:', error);
+    }
+  };
+
+  const fetchOptions = async (type) => {
+    if (!token) return;
+
+    let url = '';
+    if (type === 'beer') url = `${config.apiBaseUrl}/api/v1/beers`;
+    if (type === 'event') url = `${config.apiBaseUrl}/api/v1/bars`;
+    if (type === 'friend') url = `${config.apiBaseUrl}/api/v1/friends`;
+
+    try {
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+
+      setOptions(data.beers);
+    } catch (error) {
+      console.error('Error fetching options:', error);
+    }
+  };
+
+  const filterFeed = async (id) => {
+    console.log('Filtering feed:', filterType, id);
+    const feedItemsfilter = feedItems.filter((item) => item.beer_id === id);
+    console.log(feedItemsfilter);
+    setFilterFeed(feedItemsfilter);
+  };
+
+  const fetchFilteredFeed = async (type, id) => {
+    if (!token) return;
+    console.log('Fetching filtered feed:', type, id);
+
+    let url = '';
+    if (type === 'beer') url = `${config.apiBaseUrl}/api/v1/beers/${id}`;
+    if (type === 'event') url = `${config.apiBaseUrl}/api/v1/events/${id}`;
+    if (type === 'friend') url= `${config.apiBaseUrl}/api/v1/friends/${id}`;
+
+    try {
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      console.log(data)
+      setFeedItems(data);
+    } catch (error) {
+      console.error('Error fetching filtered feed:', error);
+    }
+  };
+
+  const openFilter = (type) => {
+    setFilterType(type);
+    fetchOptions(type);
+    setModalVisible(true);
+  };
+
+  const applyFilter = () => {
+    setModalVisible(false);
+    if (selectedOption) {
+      filterFeed(selectedOption);
+    } else {
+      fetchFeed();
     }
   };
 
   useEffect(() => {
     if (token) {
-      fetchInitialFeed();
       fetchUsers();
       fetchBeers();
-      const connectWebSocket = () => {
-        const ws = new WebSocket(`ws://10.33.0.139:3001/cable?token=${token}`);
-  
-        ws.onopen = () => {
-          console.log('WebSocket connection opened');
-          const subscribeMessage = {
-            command: 'subscribe',
-            identifier: JSON.stringify({ channel: 'FeedChannel' }),
+      fetchFeed();
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      const cable = createConsumer(config.cableUrl);
+      const channel = cable.subscriptions.create('FeedChannel', {
+        received(data) {
+          const formattedData = {
+            id: data.id,
+            text: data.text,
+            rating: data.rating,
+            user_id: data.user.id,
+            beer_id: data.beer.id,
+            created_at: data.created_at,
           };
-          ws.send(JSON.stringify(subscribeMessage));
-        };
-  
-        ws.onmessage = (event) => {
-          const data = JSON.parse(event.data);
-          if (data.type === 'welcome' || data.type === 'ping' || data.type === 'confirm_subscription') {
-            return;
-          }
-  
-          if (data.message) {
-            console.log('Received new feed item:', data.message);
-            setFeedItems((prevItems) => [data.message, ...prevItems]);
-          }
-        };
-  
-        ws.onerror = (error) => {
-          console.error('WebSocket error:', error.message);
-        };
-  
-        ws.onclose = (event) => {
-          console.log(`WebSocket closed: ${event.code}, ${event.reason}`);
-          setTimeout(connectWebSocket, 3000); 
-        };
-  
-        return ws;
+
+          setFeedItems((prevItems) => [formattedData, ...prevItems]);
+        },
+      });
+
+      return () => {
+        channel.unsubscribe();
       };
-  
-      const ws = connectWebSocket();
-  
-      return () => ws.close();
     }
   }, [token]);
 
   const renderItem = ({ item }) => {
+    if (!users || !beers) {
+      return <Text>Cargando...</Text>;
+    }
+
     if (item.beer_id && beers && users) {
-      const user = users[item.user_id-1];
+      const user = users[item.user_id - 1];
       const beer = beers[item.beer_id];
       return (
-        <View style={styles.feedItem}>
-          <Text style={styles.userName}>
-            {user ? `${user.first_name} ${user.last_name}` : `Usuario ID: ${item.user_id}`}
-          </Text>
-          <Text>
-            Calificación: {item.rating} para la cerveza {beer ? beer.name : `ID: ${item.beer_id}`}
-          </Text>
-          <Text>{item.text}</Text>
-        </View>
+        <TouchableOpacity
+          style={styles.feedItem}
+          onPress={() => navigation.navigate('BeerDetails', { beerId: item.beer_id })}
+        >
+          <View style={styles.feedItem}>
+            <Text style={styles.userName}>
+              {user ? `${user.first_name} ${user.last_name}` : `Usuario ID: ${item.user_id}`}
+            </Text>
+            <Text>
+              Calificación: {item.rating} para la cerveza {beer ? beer.name : `ID: ${item.beer_id}`}
+            </Text>
+            <Text>{item.text}</Text>
+          </View>
+        </TouchableOpacity>
       );
     } else if (item.event_id && users) {
       const user = users[item.user_id];
       return (
-        <View style={styles.feedItem}>
-          <Text style={styles.userName}>
-            {user ? `${user.first_name} ${user.last_name}` : `Usuario ID: ${item.user_id}`}
-          </Text>
-          <Text>Actividad en el evento ID {item.event_id}</Text>
-          <Text>{item.description}</Text>
-        </View>
+        <TouchableOpacity
+          style={styles.feedItem}
+          onPress={() => navigation.navigate('EventsShow', { eventId: item.event_id })}
+        >
+          <View style={styles.feedItem}>
+            <Text style={styles.userName}>
+              {user ? `${user.first_name} ${user.last_name}` : `Usuario ID: ${item.user_id}`}
+            </Text>
+            <Text>Actividad en el evento ID {item.event_id}</Text>
+            <Text>{item.description}</Text>
+          </View>
+        </TouchableOpacity>
       );
     }
 
-    return null; // No renderizar si no es válido
+    return null;
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Feed de Actividades</Text>
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>Feed de Actividades</Text>
+        <TouchableOpacity onPress={() => openFilter('beer')}>
+          <Text style={styles.filterButton}>Filtrar</Text>
+        </TouchableOpacity>
+      </View>
+
       <FlatList
-        data={feedItems}
-        keyExtractor={(item, index) => `${item.id}_${item.user_id}_${index}` /* Garantizar unicidad */}
+        data={filteredFeed}
+        keyExtractor={(item, index) => `${item.id}_${index}`}
         renderItem={renderItem}
+        style={styles.flatList} // Aplica el estilo aquí
       />
+
+      <Modal visible={modalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <Text>Selecciona una opción</Text>
+          <FlatList
+            data={Array.isArray(options) ? options : []} // Asegúrate de que options sea un arreglo
+            keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()} // Usa 'id' o índice
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => setSelectedOption(item.id)}>
+                <Text>{item.name || 'Sin Nombre'}</Text> 
+              </TouchableOpacity>
+            )}
+          />
+          <TouchableOpacity style={styles.applyButton} onPress={applyFilter}>
+            <Text>Aplicar Filtro</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setModalVisible(false)}>
+            <Text style={styles.closeModal}>Cerrar</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -184,27 +265,67 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFDD', // Fondo principal
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   header: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    fontFamily: 'Comic Sans MS',
+    color: '#000',
+  },
+  filterButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    backgroundColor: '#006A71',
+    color: '#fff',
+    borderRadius: 25,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   feedItem: {
     padding: 16,
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
+    borderRadius: 25,
+    backgroundColor: '#73B0AB', // Fondo para los elementos del feed
+    borderWidth: 1,
+    borderColor: '#000',
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
   },
   userName: {
     fontWeight: 'bold',
+    fontSize: 16,
+    color: '#FFF',
     marginBottom: 4,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  applyButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#FFCC00',
+    borderRadius: 25,
+    marginTop: 16,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  closeModal: {
+    marginTop: 16,
+    color: '#ff0077',
+    fontWeight: 'bold',
+  },
+  flatList: {
+    borderRadius: 25,
+    backgroundColor: '#E5F5E5', // Fondo para la lista de feed
   },
 });
 

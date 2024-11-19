@@ -195,55 +195,65 @@ export default function EventPicture() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#fcf7e5',
+    backgroundColor: '#FFFFDD', // Fondo principal
     alignItems: 'center',
   },
   title: {
     fontSize: 32,
     color: '#000',
     marginBottom: 20,
+    textAlign: 'center',
+    fontFamily: 'Comic Sans MS', // Fuente personalizada
   },
   imagePicker: {
     width: 300,
     height: 300,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#E5F5E5', // Fondo para la selección de imágenes
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#000', // Borde negro
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
-    borderRadius: 20,
   },
   placeholderText: {
     color: '#666',
+    textAlign: 'center',
   },
   image: {
     width: '100%',
     height: '100%',
-    borderRadius: 20,
+    borderRadius: 25,
   },
   descriptionInput: {
     width: '80%',
     height: 60,
     marginVertical: 20,
     padding: 10,
-    borderRadius: 15,
-    borderColor: '#00a0a0',
-    borderWidth: 2,
-    backgroundColor: '#9fcfcf',
-    color: '#000',
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#000',
+    backgroundColor: '#73B0AB', // Fondo para la descripción
+    color: '#FFF', // Texto blanco
   },
   tagUsersInput: {
     width: '80%',
+    height: 60,
     padding: 10,
-    borderRadius: 20,
-    borderColor: '#00a0a0',
-    borderWidth: 2,
-    backgroundColor: '#9fcfcf',
-    color: '#000',
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#000',
+    backgroundColor: '#73B0AB', // Fondo para etiquetar usuarios
+    color: '#FFF', // Texto blanco
+    marginBottom: 20,
   },
   userSuggestion: {
     padding: 10,
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
+    backgroundColor: '#73B0AB', // Fondo para sugerencias de usuarios
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#000',
+    marginBottom: 10,
   },
   taggedUsers: {
     flexDirection: 'row',
@@ -252,9 +262,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   taggedUser: {
-    backgroundColor: '#9fcfcf',
+    backgroundColor: '#73B0AB', // Fondo para usuarios etiquetados
     padding: 10,
-    borderRadius: 20,
+    borderRadius: 25,
     margin: 5,
+    color: '#FFF', // Texto blanco
   },
 });

@@ -146,47 +146,83 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#FFF',
+    backgroundColor: '#FFFFDD', // Fondo principal
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20,
     color: '#000',
+    textAlign: 'center',
+    fontFamily: 'Comic Sans MS', // Fuente personalizada
   },
   searchContainer: {
     flexDirection: 'row',
     marginBottom: 16,
+    alignItems: 'center',
   },
   searchInput: {
     flex: 1,
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    borderRadius: 4,
+    borderRadius: 25,
+    backgroundColor: '#006A71', // Fondo para los inputs
+    paddingHorizontal: 15,
+    color: '#FFF', // Texto blanco
+  },
+  searchButton: {
+    marginLeft: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#ff0077',
+    borderRadius: 25,
+  },
+  searchButtonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
   },
   barCard: {
-    padding: 15,
+    borderRadius: 25,
+    backgroundColor: '#73B0AB', // Fondo para las tarjetas de bares
+    padding: 20,
+    marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    backgroundColor: '#FAFAFA',
-    marginBottom: 20,
+    borderColor: '#000',
   },
   barInfo: {
-    marginLeft: 10,
+    flexDirection: 'column',
   },
   barName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
+    color: '#FFF', // Texto blanco para contraste
+    marginBottom: 8,
   },
   barLocation: {
     fontSize: 14,
-    color: '#888',
+    color: '#E0F4F4', // Texto claro para contraste
+    marginBottom: 4,
   },
   barDescription: {
     fontSize: 12,
-    color: '#AAA',
+    color: '#E0F4F4',
+  },
+  button: {
+    marginTop: 10,
+    paddingVertical: 10,
+    borderRadius: 25,
+    backgroundColor: '#ff0077',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  emptyListText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#000',
+    marginTop: 20,
   },
 });

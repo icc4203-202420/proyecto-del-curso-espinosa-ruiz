@@ -241,13 +241,16 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: '#fffcdc',
+    backgroundColor: '#FFFFDD', // Fondo principal
     alignItems: 'center',
   },
   eventName: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    color: '#000',
+    marginBottom: 20,
+    textAlign: 'center',
+    fontFamily: 'Comic Sans MS', // Fuente personalizada
   },
   addEventButton: {
     position: 'absolute',
@@ -262,13 +265,29 @@ const styles = StyleSheet.create({
     width: 337,
     height: 315,
     borderRadius: 25,
-    backgroundColor: '#e5f5e5',
+    borderWidth: 1,
+    borderColor: '#000',
+    backgroundColor: '#E5F5E5', // Fondo de las imágenes
     marginBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   eventImage: {
     width: '100%',
     height: '100%',
     borderRadius: 25,
+  },
+  descriptionContainer: {
+    padding: 20,
+    borderRadius: 25,
+    backgroundColor: '#73B0AB', // Fondo para las descripciones
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  descriptionText: {
+    fontSize: 16,
+    color: '#FFF', // Texto blanco para contraste
+    textAlign: 'center',
   },
   attendingSection: {
     alignItems: 'center',
@@ -276,35 +295,50 @@ const styles = StyleSheet.create({
   },
   attendingButton: {
     padding: 10,
-    backgroundColor: 'black',
+    borderRadius: 25,
+    backgroundColor: '#ff0077', // Botón con color primario
+    alignItems: 'center',
   },
   attendeesTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#000',
     marginBottom: 10,
+    textAlign: 'center',
   },
   attendee: {
     padding: 10,
-    backgroundColor: '#fff',
-    borderRadius: 20,
+    borderRadius: 25,
+    backgroundColor: '#73B0AB', // Fondo para los asistentes
     marginVertical: 5,
     alignItems: 'center',
+    width: '100%',
   },
   username: {
     fontSize: 16,
-    color: '#000',
+    color: '#FFF', // Texto blanco
   },
   galleryTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#000',
     marginVertical: 10,
+    textAlign: 'center',
   },
   galleryImage: {
+    width: 300,
+    height: 200,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#000',
+    backgroundColor: '#E5F5E5', // Fondo de las imágenes en la galería
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 20,
   },
   image: {
-    width: 300,
-    height: 200,
-    borderRadius: 10,
+    width: '100%',
+    height: '100%',
+    borderRadius: 25,
   },
 });
